@@ -484,16 +484,25 @@ function qzShow(){
   document.getElementById('qz-stats').textContent='\u6b63\u89e3\u7387: '+qz.correct+'/'+qz.total;
   qz.answered=false;
 
-  // Build 4 choices: correct + 3 random wrong from other meanings of same word or other words
+  // Build 4 choices: correct + at least 1 other meaning of same word + random fillers
   var correct=item.meaning;
+  // Other meanings of the SAME word (mandatory)
+  var sameWordWrongs=item.w.meanings.filter(function(m,i){return i!==item.mIdx;});
+  sameWordWrongs.sort(function(){return Math.random()-0.5;});
+  // Random meanings from OTHER words (fillers)
+  var otherMeanings=[];
+  POLY.forEach(function(w){if(w.id!==item.w.id)w.meanings.forEach(function(m){otherMeanings.push(m);});});
+  otherMeanings.sort(function(){return Math.random()-0.5;});
+  // Build wrongs: always include at least 1 from same word, fill rest from others
   var wrongs=[];
-  // First try other meanings of same word
-  item.w.meanings.forEach(function(m,i){if(i!==item.mIdx)wrongs.push(m);});
-  // Fill from other words' meanings
-  var allMeanings=[];
-  POLY.forEach(function(w){if(w.id!==item.w.id)w.meanings.forEach(function(m){allMeanings.push(m);});});
-  allMeanings.sort(function(){return Math.random()-0.5;});
-  allMeanings.forEach(function(m){if(wrongs.length<10&&m!==correct)wrongs.push(m);});
+  // Add 1 mandatory same-word meaning
+  if(sameWordWrongs.length>0) wrongs.push(sameWordWrongs[0]);
+  // Add more same-word meanings if available (up to 2 more)
+  for(var si=1;si<sameWordWrongs.length&&wrongs.length<3;si++) wrongs.push(sameWordWrongs[si]);
+  // Fill remaining slots with other-word meanings
+  for(var oi=0;oi<otherMeanings.length&&wrongs.length<3;oi++){
+    if(otherMeanings[oi]!==correct) wrongs.push(otherMeanings[oi]);
+  }
   wrongs.sort(function(){return Math.random()-0.5;});
   var choices=[correct,wrongs[0],wrongs[1],wrongs[2]].sort(function(){return Math.random()-0.5;});
 
