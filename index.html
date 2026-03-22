@@ -342,18 +342,7 @@ function doMark(id,type,e){
   var b=card.querySelector(type==='learned'?'.mkb-ok':type==='maybe'?'.mkb-maybe':'.mkb-ng');
   if(b)b.classList.add('on');
 }
-function updateGenBar(){
-  var total=0,done=0;
-  POLY.forEach(function(w){w.meanings.forEach(function(_,i){total++;if(exCache[exKey(w.id,i)])done++;});});
-  if(done===total&&total>0){
-    document.getElementById('gen-btn').style.display='none';
-    document.getElementById('gen-done').style.display='inline';
-    document.getElementById('gen-prog').style.display='none';
-  }else{
-    document.getElementById('gen-btn').style.display='';
-    document.getElementById('gen-btn').textContent='\u26a1 \u5168\u4f8b\u6587\u3092\u4e00\u62ec\u751f\u6210 ('+done+'/'+total+' \u6e08\u307f)';
-  }
-}
+function updateGenBar(){} // gen-bar removed
 
 
 // ===== API: single example =====
@@ -487,7 +476,7 @@ function qzShow(){
   document.getElementById('qz-pfill').style.width=((qz.idx/total)*100).toFixed(1)+'%';
   document.getElementById('qz-ctr').textContent=(qz.idx+1)+' / '+total;
   document.getElementById('qz-ex-en').textContent=item.ex.en;
-  document.getElementById('qz-ex-ja').textContent=item.ex.ja;
+  document.getElementById('qz-ex-ja').textContent='';
   document.getElementById('qz-word').textContent=item.w.en;
   document.getElementById('qz-result').textContent='';
   document.getElementById('qz-result').className='qz-result';
