@@ -355,15 +355,12 @@ function updateGenBar(){
 }
 
 // ===== BATCH GENERATION =====
-// Key strategy: we build keys ourselves and inject into prompt as positional markers
-// Claude returns array in SAME ORDER as input - we match by position, not by key string
 var genRunning=false;
 async function startGenAll(){
   if(genRunning)return;
   genRunning=true;
   document.getElementById('gen-btn').style.display='none';
-  var progDiv=document.getElementById('gen-prog');
-  progDiv.style.display='flex';
+  document.getElementById('gen-prog').style.display='flex';
 
   var tasks=[];
   POLY.forEach(function(w){
@@ -372,48 +369,55 @@ async function startGenAll(){
     });
   });
 
-  var total=tasks.length,done=0;
+  var total=tasks.length,saved=0,failed=0;
   document.getElementById('prog-label').textContent='0 / '+total;
 
-  var bsz=15;
+  // Process in parallel batches of 5
+  var bsz=5;
   for(var b=0;b<tasks.length;b+=bsz){
     var batch=tasks.slice(b,b+bsz);
-    // Build prompt - ask Claude to return array in SAME ORDER
-    var prompt='For each word+meaning below, write ONE example sentence (8-12 words). Return a JSON array IN THE SAME ORDER as the input. Each object: {"en":"sentence","ja":"\u65e5\u672c\u8a9e\u8a33"}\n\nReturn ONLY the JSON array, no markdown:\n\n';
-    batch.forEach(function(t,idx){
-      prompt+=(idx+1)+'. "'+t.en+'" \u610f\u5473: '+t.meaning+'\n';
-    });
-    try{
-      var resp=await fetch('https://api.anthropic.com/v1/messages',{
+
+    var promises=batch.map(function(t){
+      var p='Write one English example sentence (max 12 words) for "'+t.en+'" used to mean: '+t.meaning+'\nRespond with ONLY this JSON (no markdown): {"en":"<sentence>","ja":"<\u65e5\u672c\u8a9e\u8a33>"}';
+      return fetch('https://api.anthropic.com/v1/messages',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:3000,messages:[{role:'user',content:prompt}]})
-      });
-      var data=await resp.json();
-      var txt='';
-      if(data.content&&data.content[0]&&data.content[0].text)txt=data.content[0].text;
-      var clean=txt.replace(/```json|```/g,'').trim();
-      var results=JSON.parse(clean);
-      // Match by position
-      for(var i=0;i<results.length&&i<batch.length;i++){
-        var t=batch[i];
-        var k=exKey(t.wordId,t.mIdx);
-        exCache[k]={en:results[i].en,ja:results[i].ja};
-        done++;
-      }
-    }catch(e){
-      // On error, skip batch but still advance counter
-      done+=batch.length;
-    }
-    try{localStorage.setItem('poly_examples',JSON.stringify(exCache));}catch(e){}
+        body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:150,messages:[{role:'user',content:p}]})
+      })
+      .then(function(r){return r.json();})
+      .then(function(data){
+        var txt=(data.content&&data.content[0]&&data.content[0].text)?data.content[0].text:'';
+        var match=txt.match(/\{[^{}]*"en"\s*:\s*"([^"]+)"[^{}]*"ja"\s*:\s*"([^"]+)"[^{}]*\}/);
+        if(match){
+          exCache[exKey(t.wordId,t.mIdx)]={en:match[1],ja:match[2]};
+          return true;
+        }
+        var ex=JSON.parse(txt.replace(/```json|```/g,'').trim());
+        exCache[exKey(t.wordId,t.mIdx)]={en:ex.en,ja:ex.ja};
+        return true;
+      })
+      .catch(function(){ return false; });
+    });
+
+    var results=await Promise.all(promises);
+    results.forEach(function(ok){if(ok)saved++;else failed++;});
+
+    try{localStorage.setItem('poly_examples',JSON.stringify(exCache));}
+    catch(e){document.getElementById('prog-label').textContent='\u4fdd\u5b58\u5931\u6557: '+e.message;}
+
+    var done=saved+failed;
     document.getElementById('prog-fill').style.width=((done/total)*100)+'%';
-    document.getElementById('prog-label').textContent=done+' / '+total;
-    await new Promise(function(r){setTimeout(r,500);});
+    document.getElementById('prog-label').textContent=saved+'\u4fdd\u5b58 / '+total+(failed>0?' (\u5931\u6557'+failed+')':'');
+    await new Promise(function(r){setTimeout(r,300);});
   }
+
   genRunning=false;
+  if(failed>0){
+    document.getElementById('gen-btn').style.display='';
+    document.getElementById('gen-btn').textContent='\u26a1 \u5931\u6557\u5206\u3092\u518d\u8a66\u884c ('+failed+'\u4ef6)';
+  }
   updateGenBar();render();
 }
-
 // ===== API: single example =====
 async function fetchOneExample(en,meaning){
   var prompt='Write one example sentence (8-12 words) for "'+en+'" meaning: "'+meaning+'". Return ONLY JSON: {"en":"sentence","ja":"\u65e5\u672c\u8a9e\u8a33"}';
