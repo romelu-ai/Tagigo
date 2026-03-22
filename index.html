@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>多義語フラッシュカード</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Playfair+Display:ital,wght@0,700;1,400&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0c0e14;
+  --bg2:#12151f;
+  --card:#181c2a;
+  --card2:#1e2336;
+  --border:#252d42;
+  --border2:#2e3850;
+  --text:#e8eaf6;
+  --muted:#5a6580;
+  --muted2:#8892b0;
+  --accent:#7c9ef8;
+  --accent2:#5b7de8;
+  --gold:#f5c842;
+  --gold-dim:rgba(245,200,66,0.12);
+  --red:#ff6b7a;
+  --red-dim:rgba(255,107,122,0.12);
+  --blue:#6c8fff;
+  --blue-dim:rgba(108,143,255,0.12);
+  --green:#3dd68c;
+  --green-dim:rgba(61,214,140,0.12);
+  --purple:#b57bee;
+  --r:12px;
+}
+html{font-size:16px}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+/* ===== HEADER ===== */
+#header{
+position:sticky;top:0;z-index:50;
+background:rgba(12,14,20,0.92);backdrop-filter:blur(12px);
+border-bottom:1px solid var(–border);
+padding:0 18px;height:54px;
+display:flex;align-items:center;gap:12px;
+}
+.logo{
+font-family:‘Playfair Display’,serif;font-size:1.15rem;font-weight:700;
+color:var(–gold);white-space:nowrap;flex-shrink:0;letter-spacing:0.02em;
+}
+.logo span{font-style:italic;color:var(–accent);font-size:0.85em;margin-left:3px}
+.hdr-count{
+font-family:‘Fira Code’,monospace;font-size:0.72rem;color:var(–muted2);
+background:var(–card);border:1px solid var(–border);border-radius:20px;padding:3px 10px;
+white-space:nowrap;
+}
+.hdr-count b{color:var(–accent)}
+.hdr-right{margin-left:auto;display:flex;gap:8px;flex-shrink:0}
+.btn{
+display:inline-flex;align-items:center;gap:5px;
+background:var(–card);border:1px solid var(–border2);border-radius:8px;
+padding:6px 13px;color:var(–muted2);
+font-family:‘Noto Sans JP’,sans-serif;font-size:0.8rem;
+cursor:pointer;transition:all 0.15s;white-space:nowrap;line-height:1;
+}
+.btn:hover{border-color:var(–accent);color:var(–accent);background:rgba(124,158,248,0.1)}
+.btn-gold{background:linear-gradient(135deg,#b8940a,#f5c842);border-color:#f5c842;color:#1a1000;font-weight:700}
+.btn-gold:hover{opacity:0.88;color:#1a1000;background:linear-gradient(135deg,#b8940a,#f5c842);border-color:#f5c842}
+.btn-sm{padding:4px 10px;font-size:0.74rem;border-radius:6px}
+
+/* ===== CONTROLS ===== */
+#controls{
+background:var(–bg2);border-bottom:1px solid var(–border);
+padding:10px 18px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+}
+.search-box{position:relative;flex:1;min-width:160px;max-width:300px}
+.search-box svg{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(–muted);pointer-events:none}
+input[type=“text”]{
+width:100%;background:var(–card);border:1px solid var(–border2);border-radius:8px;
+padding:7px 10px 7px 30px;color:var(–text);font-family:‘Noto Sans JP’,sans-serif;
+font-size:0.82rem;outline:none;transition:border-color 0.18s;
+}
+input[type=“text”]:focus{border-color:var(–accent)}
+input[type=“text”]::placeholder{color:var(–muted)}
+.filter-btns{display:flex;gap:5px;flex-wrap:wrap}
+.filter-btn{
+background:var(–card);border:1px solid var(–border);border-radius:6px;
+padding:4px 10px;color:var(–muted2);font-size:0.73rem;cursor:pointer;
+font-family:‘Noto Sans JP’,sans-serif;transition:all 0.15s;white-space:nowrap;
+}
+.filter-btn:hover,.filter-btn.active{border-color:var(–accent);color:var(–accent);background:rgba(124,158,248,0.1)}
+.filter-btn.f-learned.active{border-color:var(–red);color:var(–red);background:var(–red-dim)}
+.filter-btn.f-maybe.active{border-color:var(–gold);color:var(–gold);background:var(–gold-dim)}
+.filter-btn.f-difficult.active{border-color:var(–blue);color:var(–blue);background:var(–blue-dim)}
+
+/* ===== WORD LIST ===== */
+#statusbar{padding:8px 18px;font-family:‘Fira Code’,monospace;font-size:0.74rem;color:var(–muted)}
+#list-view{max-width:1000px;margin:0 auto;padding:10px 18px 80px;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px}
+
+.wcard{
+background:var(–card);border:1px solid var(–border);border-radius:var(–r);
+padding:14px 16px;cursor:pointer;transition:all 0.18s;position:relative;overflow:hidden;
+}
+.wcard::before{content:’’;position:absolute;top:0;left:0;right:0;height:2px;opacity:0;transition:opacity 0.2s}
+.wcard.st-learned::before{background:var(–red);opacity:1}
+.wcard.st-maybe::before{background:var(–gold);opacity:1}
+.wcard.st-difficult::before{background:var(–blue);opacity:1}
+.wcard:hover{border-color:var(–border2);background:var(–card2);transform:translateY(-1px)}
+.wcard-top{display:flex;align-items:flex-start;gap:6px;margin-bottom:6px}
+.wcard-en{font-family:‘Playfair Display’,serif;font-size:1.1rem;font-weight:700;color:var(–text);flex:1;line-height:1.2}
+.wcard-count{
+font-family:‘Fira Code’,monospace;font-size:0.65rem;color:var(–accent);
+background:rgba(124,158,248,0.12);border:1px solid rgba(124,158,248,0.25);
+border-radius:10px;padding:2px 7px;white-space:nowrap;flex-shrink:0;margin-top:2px;
+}
+.wcard-meanings{font-size:0.74rem;color:var(–muted2);line-height:1.6}
+.wcard-meaning-item{display:flex;gap:5px;align-items:baseline}
+.wcard-meaning-num{font-family:‘Fira Code’,monospace;font-size:0.62rem;color:var(–accent);flex-shrink:0}
+.wcard-mark-row{display:flex;gap:5px;margin-top:10px;flex-wrap:wrap}
+.mk-btn{
+font-size:0.68rem;padding:2px 8px;border-radius:4px;cursor:pointer;
+font-family:‘Noto Sans JP’,sans-serif;border:1px solid;transition:all 0.15s;white-space:nowrap;
+}
+.mk-ok{color:var(–red);border-color:rgba(255,107,122,0.4);background:var(–red-dim)}
+.mk-ok.on,.mk-ok:hover{background:rgba(255,107,122,0.28)}
+.mk-maybe{color:var(–gold);border-color:rgba(245,200,66,0.4);background:var(–gold-dim)}
+.mk-maybe.on,.mk-maybe:hover{background:rgba(245,200,66,0.28)}
+.mk-ng{color:var(–blue);border-color:rgba(108,143,255,0.4);background:var(–blue-dim)}
+.mk-ng.on,.mk-ng:hover{background:rgba(108,143,255,0.28)}
+
+/* ===== FLASHCARD OVERLAY ===== */
+#fc-overlay{
+display:none;position:fixed;top:0;right:0;bottom:0;left:0;
+background:var(–bg);z-index:99999;flex-direction:column;
+}
+#fc-header{
+display:flex;align-items:center;gap:8px;padding:10px 14px;
+border-bottom:1px solid var(–border);background:var(–bg2);flex-shrink:0;flex-wrap:wrap;
+}
+.fc-title{font-size:0.85rem;color:var(–muted2);white-space:nowrap;flex-shrink:0}
+.fc-counter{font-family:‘Fira Code’,monospace;font-size:0.78rem;color:var(–muted2)}
+.fc-pbar{height:3px;background:var(–border);flex-shrink:0}
+.fc-pfill{height:100%;background:linear-gradient(90deg,var(–accent),var(–purple));transition:width 0.3s}
+#fc-body{
+flex:1;display:flex;flex-direction:column;align-items:center;
+justify-content:center;padding:24px 20px;overflow-y:auto;
+}
+.fc-card{
+width:100%;max-width:540px;background:var(–card);border:1px solid var(–border2);
+border-radius:18px;padding:36px 32px 28px;text-align:center;
+cursor:pointer;transition:border-color 0.2s,transform 0.1s;
+position:relative;user-select:none;overflow:hidden;
+}
+.fc-card:active{transform:scale(0.99)}
+.fc-card:hover{border-color:var(–accent)}
+.fc-card-pos{
+position:absolute;top:14px;left:16px;
+font-family:‘Fira Code’,monospace;font-size:0.65rem;color:var(–muted);
+}
+.fc-card-hint{position:absolute;bottom:12px;right:14px;font-size:0.65rem;color:var(–muted)}
+.fc-word{font-family:‘Playfair Display’,serif;font-size:2rem;font-weight:700;color:var(–text);line-height:1.2;margin-bottom:4px}
+.fc-meaning-badge{
+display:inline-block;font-family:‘Fira Code’,monospace;font-size:0.68rem;
+color:var(–accent);border:1px solid rgba(124,158,248,0.3);border-radius:10px;
+padding:2px 10px;margin-bottom:14px;
+}
+.fc-meaning-text{font-size:0.9rem;color:var(–muted2);line-height:1.65;display:none}
+.fc-meaning-text.show{display:block}
+.fc-example{
+font-size:0.82rem;color:var(–text);margin-top:12px;line-height:1.7;
+text-align:left;background:rgba(124,158,248,0.06);border-left:2px solid var(–accent);
+padding:8px 12px;border-radius:0 6px 6px 0;display:none;
+}
+.fc-example.show{display:block}
+.fc-example-ja{font-size:0.75rem;color:var(–muted2);margin-top:4px}
+.fc-loading{font-size:0.8rem;color:var(–muted);margin-top:12px;display:none;animation:pulse 1.2s infinite}
+.fc-loading.show{display:block}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+
+/* feedback */
+.fc-feedback{
+position:absolute;top:0;left:0;right:0;bottom:0;
+display:flex;align-items:center;justify-content:center;
+pointer-events:none;opacity:0;border-radius:18px;z-index:10;
+}
+.fc-feedback.show{animation:fbFade 0.65s ease-out forwards}
+.fc-feedback.learned-fb{background:rgba(255,107,122,0.1)}
+.fc-feedback.maybe-fb{background:rgba(245,200,66,0.1)}
+.fc-feedback.difficult-fb{background:rgba(108,143,255,0.1)}
+.fc-fb-sym{font-size:4.5rem;line-height:1;animation:symPop 0.5s cubic-bezier(0.175,0.885,0.32,1.275) forwards}
+.fc-feedback.learned-fb .fc-fb-sym{color:var(–red)}
+.fc-feedback.maybe-fb .fc-fb-sym{color:var(–gold)}
+.fc-feedback.difficult-fb .fc-fb-sym{color:var(–blue)}
+@keyframes fbFade{0%{opacity:1}60%{opacity:1}100%{opacity:0}}
+@keyframes symPop{0%{transform:scale(0.2);opacity:0}60%{transform:scale(1.2);opacity:1}100%{transform:scale(1);opacity:1}}
+
+.fc-actions{display:flex;gap:8px;margin-top:14px;justify-content:center;flex-wrap:wrap}
+.fc-btn{border-radius:8px;padding:8px 16px;font-size:0.84rem;cursor:pointer;font-family:‘Noto Sans JP’,sans-serif;transition:background 0.15s;border:1px solid}
+.fc-btn-ok{background:var(–red-dim);border-color:rgba(255,107,122,0.4);color:var(–red)}
+.fc-btn-ok:hover{background:rgba(255,107,122,0.28)}
+.fc-btn-maybe{background:var(–gold-dim);border-color:rgba(245,200,66,0.4);color:var(–gold)}
+.fc-btn-maybe:hover{background:rgba(245,200,66,0.28)}
+.fc-btn-ng{background:var(–blue-dim);border-color:rgba(108,143,255,0.4);color:var(–blue)}
+.fc-btn-ng:hover{background:rgba(108,143,255,0.28)}
+.fc-btn-skip{background:var(–card);border-color:var(–border2);color:var(–muted2)}
+.fc-btn-skip:hover{border-color:var(–accent);color:var(–accent)}
+
+.fc-nav{display:flex;gap:8px;margin-top:10px;justify-content:center}
+.fc-kbd{margin-top:10px;font-size:0.68rem;color:var(–muted);text-align:center}
+kbd{background:var(–card);border:1px solid var(–border2);border-radius:4px;padding:1px 5px;font-family:‘Fira Code’,monospace;font-size:0.68rem;color:var(–muted2)}
+
+/* meaning nav dots */
+.fc-meaning-nav{display:flex;gap:6px;justify-content:center;margin-top:10px}
+.fc-dot{width:8px;height:8px;border-radius:50%;background:var(–border2);transition:all 0.2s;cursor:pointer}
+.fc-dot.active{background:var(–accent);transform:scale(1.3)}
+
+@media(max-width:600px){
+.fc-word{font-size:1.6rem}
+#list-view{grid-template-columns:1fr 1fr}
+}
+@media(max-width:400px){#list-view{grid-template-columns:1fr}}
+</style>
+
+</head>
+<body>
+
+<div id="header">
+  <div class="logo">多義語<span>Flashcard</span></div>
+  <div class="hdr-count">計 <b id="cnt-total">0</b> 語</div>
+  <div class="hdr-count" style="color:var(--red)">覚えた <b id="cnt-learned" style="color:var(--red)">0</b></div>
+  <div class="hdr-count" style="color:var(--blue)">苦手 <b id="cnt-diff" style="color:var(--blue)">0</b></div>
+  <div class="hdr-right">
+    <button class="btn btn-gold" onclick="openFC()">&#128199; 暗記</button>
+  </div>
+</div>
+
+<div id="controls">
+  <div class="search-box">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" id="search" placeholder="単語を検索…">
+  </div>
+  <div class="filter-btns">
+    <button class="filter-btn active" data-f="all" onclick="setFilter('all',this)">すべて</button>
+    <button class="filter-btn f-learned" data-f="learned" onclick="setFilter('learned',this)">○ 覚えた</button>
+    <button class="filter-btn f-maybe" data-f="maybe" onclick="setFilter('maybe',this)">? 微妙</button>
+    <button class="filter-btn f-difficult" data-f="difficult" onclick="setFilter('difficult',this)">✕ 苦手</button>
+    <button class="filter-btn" data-f="unmarked" onclick="setFilter('unmarked',this)">未マーク</button>
+  </div>
+</div>
+
+<div id="statusbar"><span id="status-text">読み込み中…</span></div>
+<div id="list-view"></div>
+
+<!-- FLASHCARD OVERLAY -->
+
+<div id="fc-overlay">
+  <div id="fc-header">
+    <span class="fc-title">&#128199; 暗記モード</span>
+    <span class="fc-counter" id="fc-counter">0 / 0</span>
+    <div style="margin-left:auto;display:flex;gap:6px">
+      <button class="btn btn-sm" onclick="fcShuffle()">&#128256; シャッフル</button>
+      <button class="btn btn-sm" onclick="closeFC()" style="flex-shrink:0">&#127968; ホームへ</button>
+    </div>
+  </div>
+  <div class="fc-pbar"><div class="fc-pfill" id="fc-pfill" style="width:0%"></div></div>
+  <div id="fc-body">
+    <div class="fc-card" id="fc-card" onclick="fcReveal()">
+      <div class="fc-feedback" id="fc-fb"><span class="fc-fb-sym" id="fc-fb-sym"></span></div>
+      <span class="fc-card-pos" id="fc-pos"></span>
+      <div class="fc-word" id="fc-word">—</div>
+      <div class="fc-meaning-badge" id="fc-badge">意味 1 / 1</div>
+      <div class="fc-meaning-text" id="fc-meaning">—</div>
+      <div class="fc-loading" id="fc-loading">例文を生成中…</div>
+      <div class="fc-example" id="fc-example"><div id="fc-ex-en"></div><div class="fc-example-ja" id="fc-ex-ja"></div></div>
+      <span class="fc-card-hint" id="fc-hint">タップして答えを見る</span>
+    </div>
+    <div class="fc-meaning-nav" id="fc-dots"></div>
+    <div class="fc-actions" id="fc-actions" style="display:none">
+      <button class="fc-btn fc-btn-ok" onclick="fcMark('learned')">○ 覚えた</button>
+      <button class="fc-btn fc-btn-maybe" onclick="fcMark('maybe')">? 微妙</button>
+      <button class="fc-btn fc-btn-skip" onclick="fcNext()">→ 次へ</button>
+      <button class="fc-btn fc-btn-ng" onclick="fcMark('difficult')">✕ 苦手</button>
+    </div>
+    <div class="fc-nav">
+      <button class="btn btn-sm" onclick="fcPrev()">← 前へ</button>
+      <button class="btn btn-sm" onclick="fcNextMeaning()">意味を切替 ↕</button>
+      <button class="btn btn-sm" onclick="fcNext()">次へ →</button>
+    </div>
+    <div class="fc-kbd"><kbd>Space</kbd> 表示　<kbd>→</kbd> 次へ　<kbd>↕</kbd> 意味切替　<kbd>O</kbd> 覚えた　<kbd>X</kbd> 苦手　<kbd>Esc</kbd> 戻る</div>
+  </div>
+</div>
+
+<script>
+// ===== DATA & STATE =====
+var POLY = []; // polysemy words: [{id, en, meanings:[str], examples:[{en,ja}|null]}]
+var marks = {};
+try { marks = JSON.parse(localStorage.getItem('poly_marks') || '{}'); } catch(e) { marks = {}; }
+
+var S = { search:'', filter:'all' };
+var fc = { list:[], idx:0, mIdx:0, revealed:false };
+
+// ===== EXTRACT POLYSEMY FROM words.json =====
+function extractPolysemy(words) {
+  var result = [];
+  words.forEach(function(w) {
+    var ja = w.ja;
+    // Split meanings by ；（semicolons between distinct meanings）
+    // Also detect comma-separated meanings that represent different senses
+    var parts = ja.split('\uff1b'); // full-width semicolon ；
+    if (parts.length < 2) return; // skip single-meaning words
+    var meanings = parts.map(function(p){ return p.trim(); }).filter(function(p){ return p.length > 0; });
+    if (meanings.length < 2) return;
+    result.push({
+      id: w.id,
+      en: w.en,
+      meanings: meanings,
+      examples: meanings.map(function(){ return null; })
+    });
+  });
+  return result;
+}
+
+// ===== MARK =====
+function getMark(id) { return marks[String(id)] || null; }
+function saveMark(id, type) {
+  marks[String(id)] = type;
+  try { localStorage.setItem('poly_marks', JSON.stringify(marks)); } catch(e) {}
+  updateStats();
+}
+function updateStats() {
+  var vals = Object.values(marks);
+  document.getElementById('cnt-learned').textContent = vals.filter(function(v){ return v==='learned'; }).length;
+  document.getElementById('cnt-diff').textContent = vals.filter(function(v){ return v==='difficult'; }).length;
+}
+
+// ===== FILTER =====
+function setFilter(f, el) {
+  S.filter = f;
+  document.querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); });
+  if (el) el.classList.add('active');
+  render();
+}
+document.getElementById('search').addEventListener('input', function(){
+  S.search = this.value.trim().toLowerCase();
+  render();
+});
+
+function getFiltered() {
+  var list = POLY.slice();
+  if (S.search) list = list.filter(function(w){ return w.en.toLowerCase().includes(S.search); });
+  if (S.filter === 'learned')   list = list.filter(function(w){ return getMark(w.id)==='learned'; });
+  if (S.filter === 'maybe')     list = list.filter(function(w){ return getMark(w.id)==='maybe'; });
+  if (S.filter === 'difficult') list = list.filter(function(w){ return getMark(w.id)==='difficult'; });
+  if (S.filter === 'unmarked')  list = list.filter(function(w){ return !getMark(w.id); });
+  return list;
+}
+
+// ===== RENDER =====
+function render() {
+  var filtered = getFiltered();
+  document.getElementById('status-text').textContent = filtered.length + ' \u8a9e\u8868\u793a / \u5168' + POLY.length + ' \u8a9e';
+  var grid = document.getElementById('list-view');
+  grid.innerHTML = '';
+  if (filtered.length === 0) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--muted);font-size:0.88rem;">\u8a72\u5f53\u3059\u308b\u5358\u8a9e\u304c\u3042\u308a\u307e\u305b\u3093</div>';
+    return;
+  }
+  filtered.forEach(function(w) {
+    var m = getMark(w.id);
+    var card = document.createElement('div');
+    card.className = 'wcard' + (m==='learned'?' st-learned':m==='maybe'?' st-maybe':m==='difficult'?' st-difficult':'');
+    card.id = 'wcard-' + w.id;
+    var meaningsHtml = w.meanings.slice(0,3).map(function(s,i){
+      return '<div class="wcard-meaning-item"><span class="wcard-meaning-num">' + (i+1) + '.</span><span>' + s + '</span></div>';
+    }).join('') + (w.meanings.length>3?'<div style="color:var(--muted);font-size:0.68rem;margin-top:2px">…他' + (w.meanings.length-3) + '件</div>':'');
+    card.innerHTML =
+      '<div class="wcard-top">' +
+        '<span class="wcard-en">' + w.en + '</span>' +
+        '<span class="wcard-count">' + w.meanings.length + '\u610f\u5473</span>' +
+      '</div>' +
+      '<div class="wcard-meanings">' + meaningsHtml + '</div>' +
+      '<div class="wcard-mark-row">' +
+        '<button class="mk-btn mk-ok' + (m==='learned'?' on':'') + '" onclick="doMark(' + w.id + ',\'learned\',event)">\u25cb \u899a\u3048\u305f</button>' +
+        '<button class="mk-btn mk-maybe' + (m==='maybe'?' on':'') + '" onclick="doMark(' + w.id + ',\'maybe\',event)">? \u5fae\u5999</button>' +
+        '<button class="mk-btn mk-ng' + (m==='difficult'?' on':'') + '" onclick="doMark(' + w.id + ',\'difficult\',event)">\u2715 \u82e6\u624b</button>' +
+      '</div>';
+    grid.appendChild(card);
+  });
+}
+
+function doMark(id, type, e) {
+  if (e) e.stopPropagation();
+  saveMark(id, type);
+  var card = document.getElementById('wcard-' + id);
+  if (!card) return;
+  card.className = 'wcard' + (type==='learned'?' st-learned':type==='maybe'?' st-maybe':' st-difficult');
+  card.querySelectorAll('.mk-btn').forEach(function(b){ b.classList.remove('on'); });
+  var cls = type==='learned'?'.mk-ok':type==='maybe'?'.mk-maybe':'.mk-ng';
+  var btn = card.querySelector(cls);
+  if (btn) btn.classList.add('on');
+}
+
+// ===== EXAMPLE GENERATION =====
+var exampleCache = {};
+
+async function generateExample(word, meaning, meaningIdx) {
+  var key = word + '||' + meaningIdx;
+  if (exampleCache[key]) return exampleCache[key];
+  var prompt = 'Create ONE short example sentence (max 15 words) for the English word "' + word + '" used in this specific meaning: "' + meaning + '".\n\nRespond with ONLY a JSON object, no markdown, no extra text:\n{"en":"<example sentence>","ja":"<japanese translation>"}';
+  var resp = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 200,
+      messages: [{ role: 'user', content: prompt }]
+    })
+  });
+  var data = await resp.json();
+  var text = (data.content && data.content[0]) ? data.content[0].text : '';
+  try {
+    var clean = text.replace(/```json|```/g, '').trim();
+    var result = JSON.parse(clean);
+    exampleCache[key] = result;
+    return result;
+  } catch(e) {
+    return { en: text, ja: '' };
+  }
+}
+
+// ===== FLASHCARD =====
+function openFC() {
+  var filtered = getFiltered();
+  if (filtered.length === 0) { alert('\u8868\u793a\u4e2d\u306e\u5358\u8a9e\u304c\u3042\u308a\u307e\u305b\u3093'); return; }
+  fc.list = filtered.slice();
+  fc.idx = 0; fc.mIdx = 0; fc.revealed = false;
+  var ov = document.getElementById('fc-overlay');
+  ov.style.cssText = 'display:flex !important;position:fixed !important;top:0 !important;right:0 !important;bottom:0 !important;left:0 !important;z-index:99999 !important;background:var(--bg) !important;flex-direction:column !important;';
+  document.body.style.overflow = 'hidden';
+  fcShow();
+}
+
+function closeFC() {
+  document.getElementById('fc-overlay').style.cssText = 'display:none !important';
+  document.body.style.overflow = '';
+  render();
+}
+
+function fcShow() {
+  var w = fc.list[fc.idx];
+  var total = fc.list.length;
+  var mTotal = w.meanings.length;
+  if (fc.mIdx >= mTotal) fc.mIdx = 0;
+
+  document.getElementById('fc-pfill').style.width = ((fc.idx / total) * 100).toFixed(1) + '%';
+  document.getElementById('fc-counter').textContent = (fc.idx+1) + ' / ' + total;
+  document.getElementById('fc-pos').textContent = '#' + w.id;
+  document.getElementById('fc-word').textContent = w.en;
+  document.getElementById('fc-badge').textContent = '\u610f\u5473 ' + (fc.mIdx+1) + ' / ' + mTotal;
+  document.getElementById('fc-meaning').textContent = w.meanings[fc.mIdx];
+  document.getElementById('fc-meaning').classList.remove('show');
+  document.getElementById('fc-example').classList.remove('show');
+  document.getElementById('fc-loading').classList.remove('show');
+  document.getElementById('fc-actions').style.display = 'none';
+  document.getElementById('fc-hint').textContent = '\u30bf\u30c3\u30d7\u3057\u3066\u7b54\u3048\u3092\u898b\u308b';
+  fc.revealed = false;
+
+  // meaning dots
+  var dots = document.getElementById('fc-dots');
+  dots.innerHTML = '';
+  for (var i = 0; i < mTotal; i++) {
+    var dot = document.createElement('div');
+    dot.className = 'fc-dot' + (i===fc.mIdx?' active':'');
+    dot.setAttribute('data-i', i);
+    dot.onclick = (function(idx){ return function(){ fc.mIdx=idx; fcShow(); }; })(i);
+    dots.appendChild(dot);
+  }
+}
+
+async function fcReveal() {
+  if (fc.revealed) return;
+  fc.revealed = true;
+  var w = fc.list[fc.idx];
+  document.getElementById('fc-meaning').classList.add('show');
+  document.getElementById('fc-actions').style.display = 'flex';
+  document.getElementById('fc-hint').textContent = '';
+
+  // Generate example if not cached
+  var key = w.en + '||' + fc.mIdx;
+  if (!exampleCache[key]) {
+    document.getElementById('fc-loading').classList.add('show');
+    try {
+      var ex = await generateExample(w.en, w.meanings[fc.mIdx], fc.mIdx);
+      document.getElementById('fc-ex-en').textContent = ex.en;
+      document.getElementById('fc-ex-ja').textContent = ex.ja;
+      document.getElementById('fc-example').classList.add('show');
+    } catch(e) {}
+    document.getElementById('fc-loading').classList.remove('show');
+  } else {
+    var ex = exampleCache[key];
+    document.getElementById('fc-ex-en').textContent = ex.en;
+    document.getElementById('fc-ex-ja').textContent = ex.ja;
+    document.getElementById('fc-example').classList.add('show');
+  }
+}
+
+function fcNextMeaning() {
+  var w = fc.list[fc.idx];
+  fc.mIdx = (fc.mIdx + 1) % w.meanings.length;
+  fcShow();
+}
+
+function fcNext() {
+  if (fc.idx < fc.list.length - 1) {
+    fc.idx++; fc.mIdx = 0; fcShow();
+  } else {
+    setTimeout(function(){
+      alert('\u5b8c\u4e86\uff01 ' + fc.list.length + '\u8a9e\u3092\u5b8c\u8d70\u3057\u307e\u3057\u305f\u3002');
+      closeFC();
+    }, 200);
+  }
+}
+
+function fcPrev() {
+  if (fc.idx > 0) { fc.idx--; fc.mIdx = 0; fcShow(); }
+}
+
+function fcShuffle() {
+  fc.list.sort(function(){ return Math.random()-0.5; });
+  fc.idx = 0; fc.mIdx = 0; fcShow();
+}
+
+function showFeedback(type) {
+  var fb = document.getElementById('fc-fb');
+  var sym = document.getElementById('fc-fb-sym');
+  if (!fb||!sym) return;
+  fb.className = 'fc-feedback';
+  void fb.offsetWidth;
+  sym.textContent = type==='learned'?'\u25cb':type==='maybe'?'?':'\u2715';
+  fb.className = 'fc-feedback ' + (type==='learned'?'learned-fb':type==='maybe'?'maybe-fb':'difficult-fb') + ' show';
+  setTimeout(function(){ fb.className='fc-feedback'; }, 700);
+}
+
+function fcMark(type) {
+  var w = fc.list[fc.idx];
+  showFeedback(type);
+  saveMark(w.id, type);
+  setTimeout(function(){ fcNext(); }, 300);
+}
+
+document.addEventListener('keydown', function(e) {
+  var ov = document.getElementById('fc-overlay');
+  if (!ov || ov.style.cssText.indexOf('flex') < 0) return;
+  if (e.key===' '||e.key==='ArrowDown') { e.preventDefault(); fcReveal(); }
+  else if (e.key==='ArrowRight') fcNext();
+  else if (e.key==='ArrowLeft')  fcPrev();
+  else if (e.key==='ArrowUp')    fcNextMeaning();
+  else if (e.key==='o'||e.key==='O') { if(fc.revealed) fcMark('learned'); }
+  else if (e.key==='x'||e.key==='X') { if(fc.revealed) fcMark('difficult'); }
+  else if (e.key==='Escape') closeFC();
+});
+
+// ===== INIT =====
+fetch('words.json')
+  .then(function(r){ return r.json(); })
+  .then(function(words){
+    POLY = extractPolysemy(words);
+    document.getElementById('cnt-total').textContent = POLY.length;
+    updateStats();
+    render();
+  })
+  .catch(function(e){
+    document.getElementById('status-text').textContent = '\u8aad\u307f\u8fbc\u307f\u30a8\u30e9\u30fc: ' + e.message;
+  });
+</script>
+
+</body>
+</html>
