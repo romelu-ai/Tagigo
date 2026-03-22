@@ -12,16 +12,17 @@
 :root{
   --bg:#0c0e14;--bg2:#12151f;--card:#181c2a;--card2:#1e2336;
   --border:#252d42;--border2:#2e3850;--text:#e8eaf6;--muted:#5a6580;--muted2:#8892b0;
-  --accent:#7c9ef8;--gold:#f5c842;--gold-dim:rgba(245,200,66,0.12);
+  --accent:#7c9ef8;--gold:#f5c842;--gold-dim:rgba(245,200,66,0.15);
   --red:#ff6b7a;--red-dim:rgba(255,107,122,0.12);
   --blue:#6c8fff;--blue-dim:rgba(108,143,255,0.12);
+  --green:#3dd68c;--green-dim:rgba(61,214,140,0.12);
   --purple:#b57bee;--r:12px;
 }
 html{font-size:16px}
 body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
 
-#header{position:sticky;top:0;z-index:50;background:#0c0e14;border-bottom:1px solid var(–border);padding:0 16px;height:52px;display:flex;align-items:center;gap:10px}
+#header{position:sticky;top:0;z-index:50;background:rgba(12,14,20,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(–border);padding:0 16px;height:52px;display:flex;align-items:center;gap:10px}
 .logo{font-family:‘Playfair Display’,serif;font-size:1.1rem;font-weight:700;color:var(–gold);white-space:nowrap;flex-shrink:0}
 .logo em{font-style:italic;color:var(–accent);font-size:0.82em;margin-left:3px}
 .hpill{font-family:‘Fira Code’,monospace;font-size:0.7rem;color:var(–muted2);background:var(–card);border:1px solid var(–border);border-radius:20px;padding:2px 9px;white-space:nowrap}
@@ -31,6 +32,8 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .btn:hover{border-color:var(–accent);color:var(–accent);background:rgba(124,158,248,0.1)}
 .btn-gold{background:linear-gradient(135deg,#b8940a,#f5c842);border-color:#f5c842;color:#1a1000;font-weight:700}
 .btn-gold:hover{opacity:0.88;color:#1a1000;background:linear-gradient(135deg,#b8940a,#f5c842)}
+.btn-purple{background:rgba(181,123,238,0.15);border-color:rgba(181,123,238,0.5);color:var(–purple)}
+.btn-purple:hover{background:rgba(181,123,238,0.28);color:var(–purple);border-color:var(–purple)}
 .btn-sm{padding:4px 9px;font-size:0.73rem;border-radius:6px}
 
 #controls{background:var(–bg2);border-bottom:1px solid var(–border);padding:9px 16px;display:flex;gap:7px;align-items:center;flex-wrap:wrap}
@@ -46,7 +49,7 @@ input[type=“text”]::placeholder{color:var(–muted)}
 .fbtn.fd.on{border-color:var(–blue);color:var(–blue);background:var(–blue-dim)}
 
 #gen-bar{background:var(–bg2);border-bottom:1px solid var(–border);padding:8px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.prog-track{height:4px;background:var(–border);border-radius:2px;overflow:hidden;flex:1;min-width:120px}
+.prog-track{height:4px;background:var(–border);border-radius:2px;overflow:hidden;min-width:120px;flex:1}
 .prog-fill{height:100%;background:linear-gradient(90deg,var(–accent),var(–purple));width:0%;transition:width 0.3s}
 .prog-label{font-family:‘Fira Code’,monospace;font-size:0.68rem;color:var(–muted);white-space:nowrap}
 
@@ -70,28 +73,19 @@ input[type=“text”]::placeholder{color:var(–muted)}
 .mkb-maybe{color:var(–gold);border-color:rgba(245,200,66,0.4);background:var(–gold-dim)}.mkb-maybe.on,.mkb-maybe:hover{background:rgba(245,200,66,0.28)}
 .mkb-ng{color:var(–blue);border-color:rgba(108,143,255,0.4);background:var(–blue-dim)}.mkb-ng.on,.mkb-ng:hover{background:rgba(108,143,255,0.28)}
 
-/* FLASHCARD OVERLAY */
-#fc-overlay{
-display:none;
-position:fixed;
-top:0;left:0;right:0;bottom:0;
-width:100%;height:100%;
-background:#0c0e14;
-z-index:99999;
-flex-direction:column;
-overflow:hidden;
+/* ===== OVERLAY BASE ===== */
+.overlay{
+display:none;position:fixed;top:0;left:0;right:0;bottom:0;
+background:#0c0e14;z-index:99999;flex-direction:column;overflow:hidden;
 }
-#fc-header{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(–border);background:var(–bg2);flex-shrink:0;flex-wrap:wrap}
-.fc-title{font-size:0.83rem;color:var(–muted2);white-space:nowrap;flex-shrink:0}
-.fc-ctr{font-family:‘Fira Code’,monospace;font-size:0.76rem;color:var(–muted2)}
-.fc-pbar{height:3px;background:var(–border);flex-shrink:0}
-.fc-pfill{height:100%;background:linear-gradient(90deg,var(–accent),var(–purple));transition:width 0.3s}
-#fc-body{
-flex:1;min-height:0;
-display:flex;flex-direction:column;align-items:center;
-padding:16px;overflow-y:auto;-webkit-overflow-scrolling:touch;
-gap:10px;
-}
+.ov-header{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(–border);background:#12151f;flex-shrink:0;flex-wrap:wrap}
+.ov-title{font-size:0.83rem;color:var(–muted2);white-space:nowrap;flex-shrink:0}
+.ov-ctr{font-family:‘Fira Code’,monospace;font-size:0.76rem;color:var(–muted2)}
+.pbar{height:3px;background:var(–border);flex-shrink:0}
+.pfill{height:100%;background:linear-gradient(90deg,var(–accent),var(–purple));transition:width 0.3s}
+.ov-body{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;padding:16px;overflow-y:auto;-webkit-overflow-scrolling:touch;gap:10px}
+
+/* ===== FLASHCARD ===== */
 .fc-card{
 width:100%;max-width:520px;flex-shrink:0;
 background:var(–card);border:1px solid var(–border2);
@@ -99,18 +93,14 @@ border-radius:16px;padding:32px 26px 22px;text-align:center;
 cursor:pointer;transition:border-color 0.2s;
 position:relative;user-select:none;overflow:hidden;
 }
-.fc-card:active{opacity:0.95}
-.fc-card:hover{border-color:var(–accent)}
+.fc-card:active{opacity:0.95}.fc-card:hover{border-color:var(–accent)}
 .fc-pos{position:absolute;top:12px;left:14px;font-family:‘Fira Code’,monospace;font-size:0.62rem;color:var(–muted)}
 .fc-hint{position:absolute;bottom:10px;right:12px;font-size:0.62rem;color:var(–muted)}
 .fc-word{font-family:‘Playfair Display’,serif;font-size:1.85rem;font-weight:700;color:var(–text);line-height:1.2;margin-bottom:6px}
 .fc-badge{display:inline-block;font-family:‘Fira Code’,monospace;font-size:0.65rem;color:var(–accent);border:1px solid rgba(124,158,248,0.3);border-radius:10px;padding:2px 9px;margin-bottom:12px}
-.fc-meaning{font-size:0.86rem;color:var(–muted2);line-height:1.65;display:none}
-.fc-meaning.show{display:block}
-.fc-loading{font-size:0.76rem;color:var(–muted);display:none;animation:pulse 1.2s infinite;margin-top:8px}
-.fc-loading.show{display:block}
-.fc-example{font-size:0.79rem;color:var(–text);margin-top:10px;line-height:1.65;text-align:left;background:rgba(124,158,248,0.06);border-left:2px solid var(–accent);padding:7px 11px;border-radius:0 6px 6px 0;display:none}
-.fc-example.show{display:block}
+.fc-meaning{font-size:0.86rem;color:var(–muted2);line-height:1.65;display:none}.fc-meaning.show{display:block}
+.fc-loading{font-size:0.76rem;color:var(–muted);display:none;animation:pulse 1.2s infinite;margin-top:8px}.fc-loading.show{display:block}
+.fc-example{font-size:0.8rem;color:var(–text);margin-top:10px;line-height:1.65;text-align:left;background:rgba(124,158,248,0.07);border-left:2px solid var(–accent);padding:7px 11px;border-radius:0 6px 6px 0;display:none}.fc-example.show{display:block}
 .fc-ex-ja{font-size:0.72rem;color:var(–muted2);margin-top:3px}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
 .fc-fb{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:0;border-radius:16px;z-index:10}
@@ -134,6 +124,34 @@ position:relative;user-select:none;overflow:hidden;
 .fc-kbd{font-size:0.66rem;color:var(–muted);text-align:center;flex-shrink:0;padding-bottom:4px}
 kbd{background:var(–card);border:1px solid var(–border2);border-radius:4px;padding:1px 5px;font-family:‘Fira Code’,monospace;font-size:0.66rem;color:var(–muted2)}
 
+/* ===== QUIZ MODE ===== */
+.qz-card{
+width:100%;max-width:520px;flex-shrink:0;
+background:var(–card);border:1px solid var(–border2);
+border-radius:16px;padding:24px;position:relative;overflow:hidden;
+}
+.qz-label{font-family:‘Fira Code’,monospace;font-size:0.65rem;color:var(–purple);margin-bottom:8px;display:block}
+.qz-example{font-size:1rem;color:var(–text);line-height:1.65;font-style:italic;margin-bottom:6px}
+.qz-example-ja{font-size:0.78rem;color:var(–muted2);margin-bottom:12px}
+.qz-word-label{font-size:0.72rem;color:var(–muted);margin-bottom:4px}
+.qz-word{font-family:‘Playfair Display’,serif;font-size:1.5rem;font-weight:700;color:var(–text)}
+.qz-blank{font-family:‘Playfair Display’,serif;font-size:1.5rem;font-weight:700;color:var(–accent)}
+.qz-choices{display:flex;flex-direction:column;gap:7px;width:100%;max-width:520px;flex-shrink:0}
+.qz-choice{
+background:var(–card);border:1px solid var(–border2);border-radius:10px;
+padding:10px 16px;cursor:pointer;font-family:‘Noto Sans JP’,sans-serif;
+font-size:0.84rem;color:var(–text);transition:all 0.15s;text-align:left;
+}
+.qz-choice:hover{border-color:var(–accent);background:rgba(124,158,248,0.08)}
+.qz-choice.correct{border-color:var(–green);background:var(–green-dim);color:var(–green)}
+.qz-choice.wrong{border-color:var(–red);background:var(–red-dim);color:var(–red)}
+.qz-choice.reveal{border-color:var(–green);background:var(–green-dim);color:var(–green)}
+.qz-choice:disabled,.qz-choice[disabled]{cursor:default;opacity:0.7}
+.qz-result{font-size:0.8rem;padding:8px 0;flex-shrink:0;text-align:center}
+.qz-result.ok{color:var(–green)}.qz-result.ng{color:var(–red)}
+.qz-acts{display:flex;gap:7px;justify-content:center;flex-shrink:0}
+.qz-stats{font-family:‘Fira Code’,monospace;font-size:0.72rem;color:var(–muted2);text-align:center;flex-shrink:0}
+
 @media(max-width:600px){.fc-word{font-size:1.5rem}#list-view{grid-template-columns:1fr 1fr}}
 @media(max-width:400px){#list-view{grid-template-columns:1fr}}
 </style>
@@ -147,6 +165,7 @@ kbd{background:var(–card);border:1px solid var(–border2);border-radius:4px;p
   <div class="hpill" style="color:var(--red)">覚えた <b id="cnt-l" style="color:var(--red)">0</b></div>
   <div class="hpill" style="color:var(--blue)">苦手 <b id="cnt-d" style="color:var(--blue)">0</b></div>
   <div class="hdr-r">
+    <button class="btn btn-purple" onclick="openQZ()">&#10067; 例文クイズ</button>
     <button class="btn btn-gold" onclick="openFC()">&#128199; 暗記</button>
   </div>
 </div>
@@ -157,17 +176,17 @@ kbd{background:var(–card);border:1px solid var(–border2);border-radius:4px;p
     <input type="text" id="search" placeholder="単語を検索…">
   </div>
   <div style="display:flex;gap:5px;flex-wrap:wrap">
-    <button class="fbtn on" data-f="all" onclick="setFilter('all',this)">すべて</button>
-    <button class="fbtn fl" data-f="learned" onclick="setFilter('learned',this)">○ 覚えた</button>
-    <button class="fbtn fm" data-f="maybe" onclick="setFilter('maybe',this)">? 微妙</button>
-    <button class="fbtn fd" data-f="difficult" onclick="setFilter('difficult',this)">✕ 苦手</button>
-    <button class="fbtn" data-f="unmarked" onclick="setFilter('unmarked',this)">未マーク</button>
+    <button class="fbtn on" onclick="setFilter('all',this)">すべて</button>
+    <button class="fbtn fl" onclick="setFilter('learned',this)">○ 覚えた</button>
+    <button class="fbtn fm" onclick="setFilter('maybe',this)">? 微妙</button>
+    <button class="fbtn fd" onclick="setFilter('difficult',this)">✕ 苦手</button>
+    <button class="fbtn" onclick="setFilter('unmarked',this)">未マーク</button>
   </div>
 </div>
 
 <div id="gen-bar">
-  <button class="btn" id="gen-btn" onclick="startGenAll()">&#9889; 全例文を一括生成（Claude APIが必要）</button>
-  <div id="gen-progress" style="display:none;flex:1;align-items:center;gap:8px">
+  <button class="btn" id="gen-btn" onclick="startGenAll()">&#9889; 全例文を一括生成</button>
+  <div id="gen-prog" style="display:none;flex:1;align-items:center;gap:8px">
     <div class="prog-track"><div class="prog-fill" id="prog-fill"></div></div>
     <span class="prog-label" id="prog-label">0 / 0</span>
   </div>
@@ -177,17 +196,19 @@ kbd{background:var(–card);border:1px solid var(–border2);border-radius:4px;p
 <div id="statusbar"><span id="status-text">読み込み中…</span></div>
 <div id="list-view"></div>
 
-<div id="fc-overlay">
-  <div id="fc-header">
-    <span class="fc-title">&#128199; 暗記モード</span>
-    <span class="fc-ctr" id="fc-ctr">0 / 0</span>
+<!-- FLASHCARD OVERLAY -->
+
+<div class="overlay" id="fc-overlay">
+  <div class="ov-header">
+    <span class="ov-title">&#128199; 暗記モード</span>
+    <span class="ov-ctr" id="fc-ctr">0 / 0</span>
     <div style="margin-left:auto;display:flex;gap:6px">
       <button class="btn btn-sm" onclick="fcShuffle()">&#128256;</button>
       <button class="btn btn-sm" onclick="closeFC()">&#127968; ホームへ</button>
     </div>
   </div>
-  <div class="fc-pbar"><div class="fc-pfill" id="fc-pfill" style="width:0%"></div></div>
-  <div id="fc-body">
+  <div class="pbar"><div class="pfill" id="fc-pfill" style="width:0%"></div></div>
+  <div class="ov-body" id="fc-body">
     <div class="fc-card" id="fc-card" onclick="fcReveal()">
       <div class="fc-fb" id="fc-fb"><span class="fc-fbsym" id="fc-fbsym"></span></div>
       <span class="fc-pos" id="fc-pos"></span>
@@ -196,8 +217,7 @@ kbd{background:var(–card);border:1px solid var(–border2);border-radius:4px;p
       <div class="fc-meaning" id="fc-meaning">—</div>
       <div class="fc-loading" id="fc-loading">例文を生成中…</div>
       <div class="fc-example" id="fc-example">
-        <div id="fc-ex-en"></div>
-        <div class="fc-ex-ja" id="fc-ex-ja"></div>
+        <div id="fc-ex-en"></div><div class="fc-ex-ja" id="fc-ex-ja"></div>
       </div>
       <span class="fc-hint" id="fc-hint">タップして答えを見る</span>
     </div>
@@ -217,20 +237,46 @@ kbd{background:var(–card);border:1px solid var(–border2);border-radius:4px;p
   </div>
 </div>
 
+<!-- QUIZ OVERLAY -->
+
+<div class="overlay" id="qz-overlay">
+  <div class="ov-header">
+    <span class="ov-title" style="color:var(--purple)">&#10067; 例文クイズ</span>
+    <span class="ov-ctr" id="qz-ctr">0 / 0</span>
+    <div style="margin-left:auto;display:flex;gap:6px">
+      <button class="btn btn-sm" onclick="closeQZ()">&#127968; ホームへ</button>
+    </div>
+  </div>
+  <div class="pbar"><div class="pfill" id="qz-pfill" style="width:0%;background:linear-gradient(90deg,var(--purple),var(--accent))"></div></div>
+  <div class="ov-body" id="qz-body">
+    <div class="qz-card" id="qz-card">
+      <span class="qz-label">例文を読んで、この意味に当てはまる単語を選んでください</span>
+      <div class="qz-example" id="qz-ex-en">—</div>
+      <div class="qz-example-ja" id="qz-ex-ja"></div>
+      <div class="qz-word-label">単語：</div>
+      <div class="qz-word" id="qz-word">—</div>
+    </div>
+    <div class="qz-choices" id="qz-choices"></div>
+    <div class="qz-result" id="qz-result"></div>
+    <div class="qz-acts" id="qz-acts" style="display:none">
+      <button class="btn btn-sm" onclick="qzNext()">次の問題 →</button>
+    </div>
+    <div class="qz-stats" id="qz-stats"></div>
+  </div>
+</div>
+
 <script>
 var POLY=[];
+// exCache key: String(wordId)+'_'+meaningIndex  e.g. "9_0", "9_1"
 var exCache={};
 var marks={};
 try{marks=JSON.parse(localStorage.getItem('poly_marks')||'{}');}catch(e){marks={};}
 try{exCache=JSON.parse(localStorage.getItem('poly_examples')||'{}');}catch(e){exCache={};}
 var S={search:'',filter:'all'};
 var fc={list:[],idx:0,mIdx:0,revealed:false};
+var qz={list:[],idx:0,correct:0,total:0,answered:false};
 
-// fc-overlayをbody直下に移動（スタッキングコンテキスト問題の回避）
-(function(){
-  var ov=document.getElementById('fc-overlay');
-  if(ov&&ov.parentNode!==document.body){document.body.appendChild(ov);}
-})();
+function exKey(wordId,mIdx){return String(wordId)+'_'+String(mIdx);}
 
 function getMark(id){return marks[String(id)]||null;}
 function saveMark(id,type){
@@ -261,10 +307,10 @@ function getFiltered(){
 }
 function render(){
   var fl=getFiltered();
-  document.getElementById('status-text').textContent=fl.length+' 語 / 全'+POLY.length+'語';
+  document.getElementById('status-text').textContent=fl.length+' \u8a9e / \u5168'+POLY.length+'\u8a9e';
   var grid=document.getElementById('list-view');
   grid.innerHTML='';
-  if(fl.length===0){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--muted);font-size:0.88rem;">該当なし</div>';return;}
+  if(fl.length===0){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--muted);font-size:0.88rem;">\u8a72\u5f53\u306a\u3057</div>';return;}
   fl.forEach(function(w){
     var m=getMark(w.id);
     var card=document.createElement('div');
@@ -272,14 +318,14 @@ function render(){
     card.id='wcard-'+w.id;
     var mh=w.meanings.slice(0,3).map(function(s,i){
       return '<div class="wc-mi"><span class="wc-mnum">'+(i+1)+'.</span><span>'+s+'</span></div>';
-    }).join('')+(w.meanings.length>3?'<div style="color:var(--muted);font-size:0.65rem;margin-top:2px">…他'+(w.meanings.length-3)+'件</div>':'');
+    }).join('')+(w.meanings.length>3?'<div style="color:var(--muted);font-size:0.65rem;margin-top:2px">\u2026\u4ed6'+(w.meanings.length-3)+'\u4ef6</div>':'');
     card.innerHTML=
-      '<div class="wc-top"><span class="wc-en">'+w.en+'</span><span class="wc-cnt">'+w.meanings.length+'意味</span></div>'+
+      '<div class="wc-top"><span class="wc-en">'+w.en+'</span><span class="wc-cnt">'+w.meanings.length+'\u610f\u5473</span></div>'+
       '<div class="wc-meanings">'+mh+'</div>'+
       '<div class="wc-marks">'+
-        '<button class="mkb mkb-ok'+(m==='learned'?' on':'')+'" onclick="doMark('+w.id+',\'learned\',event)">○ 覚えた</button>'+
-        '<button class="mkb mkb-maybe'+(m==='maybe'?' on':'')+'" onclick="doMark('+w.id+',\'maybe\',event)">? 微妙</button>'+
-        '<button class="mkb mkb-ng'+(m==='difficult'?' on':'')+'" onclick="doMark('+w.id+',\'difficult\',event)">✕ 苦手</button>'+
+        '<button class="mkb mkb-ok'+(m==='learned'?' on':'')+'" onclick="doMark('+w.id+',\'learned\',event)">\u25cb \u899a\u3048\u305f</button>'+
+        '<button class="mkb mkb-maybe'+(m==='maybe'?' on':'')+'" onclick="doMark('+w.id+',\'maybe\',event)">? \u5fae\u5999</button>'+
+        '<button class="mkb mkb-ng'+(m==='difficult'?' on':'')+'" onclick="doMark('+w.id+',\'difficult\',event)">\u2715 \u82e6\u624b</button>'+
       '</div>';
     grid.appendChild(card);
   });
@@ -297,65 +343,108 @@ function doMark(id,type,e){
 }
 function updateGenBar(){
   var total=0,done=0;
-  POLY.forEach(function(w){w.meanings.forEach(function(_,i){total++;if(exCache[w.id+'_'+i])done++;});});
+  POLY.forEach(function(w){w.meanings.forEach(function(_,i){total++;if(exCache[exKey(w.id,i)])done++;});});
   if(done===total&&total>0){
     document.getElementById('gen-btn').style.display='none';
     document.getElementById('gen-done').style.display='inline';
+    document.getElementById('gen-prog').style.display='none';
   }else{
-    document.getElementById('gen-btn').textContent='⚡ 全例文を一括生成 ('+done+'/'+total+' 済み)';
+    document.getElementById('gen-btn').style.display='';
+    document.getElementById('gen-btn').textContent='\u26a1 \u5168\u4f8b\u6587\u3092\u4e00\u62ec\u751f\u6210 ('+done+'/'+total+' \u6e08\u307f)';
   }
 }
+
+// ===== BATCH GENERATION =====
+// Key strategy: we build keys ourselves and inject into prompt as positional markers
+// Claude returns array in SAME ORDER as input - we match by position, not by key string
 var genRunning=false;
 async function startGenAll(){
   if(genRunning)return;
   genRunning=true;
   document.getElementById('gen-btn').style.display='none';
-  var prog=document.getElementById('gen-progress');
-  prog.style.display='flex';
+  var progDiv=document.getElementById('gen-prog');
+  progDiv.style.display='flex';
+
   var tasks=[];
-  POLY.forEach(function(w){w.meanings.forEach(function(m,i){if(!exCache[w.id+'_'+i])tasks.push({w:w,m:m,i:i});});});
+  POLY.forEach(function(w){
+    w.meanings.forEach(function(m,i){
+      if(!exCache[exKey(w.id,i)])tasks.push({wordId:w.id,en:w.en,meaning:m,mIdx:i});
+    });
+  });
+
   var total=tasks.length,done=0;
   document.getElementById('prog-label').textContent='0 / '+total;
-  var bsz=20;
+
+  var bsz=15;
   for(var b=0;b<tasks.length;b+=bsz){
     var batch=tasks.slice(b,b+bsz);
-    var prompt='For each entry, write one example sentence (8-12 words) using the word in that specific meaning. Return ONLY a JSON array, no markdown:\n[{"key":"id_index","en":"sentence","ja":"日本語訳"},...]\n\nEntries:\n';
-    batch.forEach(function(t){prompt+=t.w.id+'_'+t.i+' "'+t.w.en+'": '+t.m+'\n';});
+    // Build prompt - ask Claude to return array in SAME ORDER
+    var prompt='For each word+meaning below, write ONE example sentence (8-12 words). Return a JSON array IN THE SAME ORDER as the input. Each object: {"en":"sentence","ja":"\u65e5\u672c\u8a9e\u8a33"}\n\nReturn ONLY the JSON array, no markdown:\n\n';
+    batch.forEach(function(t,idx){
+      prompt+=(idx+1)+'. "'+t.en+'" \u610f\u5473: '+t.meaning+'\n';
+    });
     try{
       var resp=await fetch('https://api.anthropic.com/v1/messages',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2000,messages:[{role:'user',content:prompt}]})
+        body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:3000,messages:[{role:'user',content:prompt}]})
       });
       var data=await resp.json();
-      var txt=(data.content&&data.content[0])?data.content[0].text:'';
-      var results=JSON.parse(txt.replace(/```json|```/g,'').trim());
-      results.forEach(function(r){exCache[r.key]={en:r.en,ja:r.ja};done++;});
-    }catch(e){done+=batch.length;}
+      var txt='';
+      if(data.content&&data.content[0]&&data.content[0].text)txt=data.content[0].text;
+      var clean=txt.replace(/```json|```/g,'').trim();
+      var results=JSON.parse(clean);
+      // Match by position
+      for(var i=0;i<results.length&&i<batch.length;i++){
+        var t=batch[i];
+        var k=exKey(t.wordId,t.mIdx);
+        exCache[k]={en:results[i].en,ja:results[i].ja};
+        done++;
+      }
+    }catch(e){
+      // On error, skip batch but still advance counter
+      done+=batch.length;
+    }
     try{localStorage.setItem('poly_examples',JSON.stringify(exCache));}catch(e){}
     document.getElementById('prog-fill').style.width=((done/total)*100)+'%';
     document.getElementById('prog-label').textContent=done+' / '+total;
-    await new Promise(function(r){setTimeout(r,400);});
+    await new Promise(function(r){setTimeout(r,500);});
   }
   genRunning=false;
   updateGenBar();render();
 }
 
+// ===== API: single example =====
+async function fetchOneExample(en,meaning){
+  var prompt='Write one example sentence (8-12 words) for "'+en+'" meaning: "'+meaning+'". Return ONLY JSON: {"en":"sentence","ja":"\u65e5\u672c\u8a9e\u8a33"}';
+  var resp=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:200,messages:[{role:'user',content:prompt}]})
+  });
+  var data=await resp.json();
+  var txt=(data.content&&data.content[0])?data.content[0].text:'';
+  return JSON.parse(txt.replace(/```json|```/g,'').trim());
+}
+
+// ===== FLASHCARD =====
+function openOverlay(id){
+  var ov=document.getElementById(id);
+  ov.style.cssText='display:flex!important;position:fixed!important;top:0!important;left:0!important;right:0!important;bottom:0!important;background:#0c0e14!important;z-index:99999!important;flex-direction:column!important;overflow:hidden!important;';
+  document.body.style.cssText='overflow:hidden!important;position:fixed!important;width:100%!important;';
+}
+function closeOverlay(id){
+  document.getElementById(id).style.cssText='display:none!important;';
+  document.body.style.cssText='';
+}
+
 function openFC(){
   var fl=getFiltered();
-  if(fl.length===0){alert('表示中の単語がありません');return;}
+  if(fl.length===0){alert('\u8868\u793a\u4e2d\u306e\u5358\u8a9e\u304c\u3042\u308a\u307e\u305b\u3093');return;}
   fc.list=fl.slice();fc.idx=0;fc.mIdx=0;fc.revealed=false;
-  var ov=document.getElementById('fc-overlay');
-  ov.style.cssText='display:flex!important;position:fixed!important;top:0!important;left:0!important;right:0!important;bottom:0!important;width:100%!important;height:100%!important;flex-direction:column!important;background:#0c0e14!important;z-index:99999!important;overflow:hidden!important;';
-  document.body.style.overflow='hidden';
-  fcShow();
+  openOverlay('fc-overlay');fcShow();
 }
-function closeFC(){
-  var ov=document.getElementById('fc-overlay');
-  ov.style.cssText='display:none!important;';
-  document.body.style.overflow='';
-  render();
-}
+function closeFC(){closeOverlay('fc-overlay');render();}
+
 function fcShow(){
   var w=fc.list[fc.idx],mt=w.meanings.length;
   if(fc.mIdx>=mt)fc.mIdx=0;
@@ -363,13 +452,14 @@ function fcShow(){
   document.getElementById('fc-ctr').textContent=(fc.idx+1)+' / '+fc.list.length;
   document.getElementById('fc-pos').textContent='#'+w.id;
   document.getElementById('fc-word').textContent=w.en;
-  document.getElementById('fc-badge').textContent='意味 '+(fc.mIdx+1)+'/'+mt;
+  document.getElementById('fc-badge').textContent='\u610f\u5473 '+(fc.mIdx+1)+'/'+mt;
   document.getElementById('fc-meaning').textContent=w.meanings[fc.mIdx];
   document.getElementById('fc-meaning').classList.remove('show');
   document.getElementById('fc-example').classList.remove('show');
   document.getElementById('fc-loading').classList.remove('show');
+  document.getElementById('fc-loading').textContent='\u4f8b\u6587\u3092\u751f\u6210\u4e2d\u2026';
   document.getElementById('fc-acts').style.display='none';
-  document.getElementById('fc-hint').textContent='タップして答えを見る';
+  document.getElementById('fc-hint').textContent='\u30bf\u30c3\u30d7\u3057\u3066\u7b54\u3048\u3092\u898b\u308b';
   fc.revealed=false;
   var dots=document.getElementById('fc-dots');
   dots.innerHTML='';
@@ -381,6 +471,7 @@ function fcShow(){
   }
   document.getElementById('fc-body').scrollTop=0;
 }
+
 async function fcReveal(){
   if(fc.revealed)return;
   fc.revealed=true;
@@ -388,29 +479,23 @@ async function fcReveal(){
   document.getElementById('fc-meaning').classList.add('show');
   document.getElementById('fc-acts').style.display='flex';
   document.getElementById('fc-hint').textContent='';
-  var key=w.id+'_'+fc.mIdx;
-  if(exCache[key]){
-    document.getElementById('fc-ex-en').textContent=exCache[key].en;
-    document.getElementById('fc-ex-ja').textContent=exCache[key].ja;
+  var k=exKey(w.id,fc.mIdx);
+  var ex=exCache[k];
+  if(ex){
+    document.getElementById('fc-ex-en').textContent=ex.en;
+    document.getElementById('fc-ex-ja').textContent=ex.ja;
     document.getElementById('fc-example').classList.add('show');
   }else{
     document.getElementById('fc-loading').classList.add('show');
     try{
-      var p='Write one example sentence (8-12 words) for "'+w.en+'" in this meaning: "'+w.meanings[fc.mIdx]+'". Return ONLY JSON: {"en":"sentence","ja":"日本語訳"}';
-      var resp=await fetch('https://api.anthropic.com/v1/messages',{
-        method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:200,messages:[{role:'user',content:p}]})
-      });
-      var data=await resp.json();
-      var txt=(data.content&&data.content[0])?data.content[0].text:'';
-      var ex=JSON.parse(txt.replace(/```json|```/g,'').trim());
-      exCache[key]=ex;
+      ex=await fetchOneExample(w.en,w.meanings[fc.mIdx]);
+      exCache[k]=ex;
       try{localStorage.setItem('poly_examples',JSON.stringify(exCache));}catch(e){}
       document.getElementById('fc-ex-en').textContent=ex.en;
       document.getElementById('fc-ex-ja').textContent=ex.ja;
       document.getElementById('fc-example').classList.add('show');
     }catch(e){
-      document.getElementById('fc-loading').textContent='例文の取得に失敗';
+      document.getElementById('fc-loading').textContent='\u4f8b\u6587\u306e\u53d6\u5f97\u306b\u5931\u6557\u3002\u4e00\u62ec\u751f\u6210\u3092\u304a\u8a66\u3057\u304f\u3060\u3055\u3044\u3002';
     }
     document.getElementById('fc-loading').classList.remove('show');
   }
@@ -418,7 +503,7 @@ async function fcReveal(){
 function fcNextMeaning(){var w=fc.list[fc.idx];fc.mIdx=(fc.mIdx+1)%w.meanings.length;fcShow();}
 function fcNext(){
   if(fc.idx<fc.list.length-1){fc.idx++;fc.mIdx=0;fcShow();}
-  else{setTimeout(function(){alert('完了！');closeFC();},200);}
+  else{setTimeout(function(){alert('\u5b8c\u4e86\uff01');closeFC();},200);}
 }
 function fcPrev(){if(fc.idx>0){fc.idx--;fc.mIdx=0;fcShow();}}
 function fcShuffle(){fc.list.sort(function(){return Math.random()-0.5;});fc.idx=0;fc.mIdx=0;fcShow();}
@@ -426,24 +511,116 @@ function showFb(type){
   var fb=document.getElementById('fc-fb'),sym=document.getElementById('fc-fbsym');
   if(!fb||!sym)return;
   fb.className='fc-fb';void fb.offsetWidth;
-  sym.textContent=type==='learned'?'○':type==='maybe'?'?':'✕';
+  sym.textContent=type==='learned'?'\u25cb':type==='maybe'?'?':'\u2715';
   fb.className='fc-fb '+(type==='learned'?'l':type==='maybe'?'m':'d')+' show';
   setTimeout(function(){fb.className='fc-fb';},700);
 }
 function fcMark(type){var w=fc.list[fc.idx];showFb(type);saveMark(w.id,type);setTimeout(fcNext,300);}
 
+// ===== QUIZ MODE =====
+// Quiz: show example sentence + word, pick the correct meaning from 4 choices
+function openQZ(){
+  // Build quiz items: only words that have at least one cached example
+  var items=[];
+  getFiltered().forEach(function(w){
+    w.meanings.forEach(function(m,i){
+      var k=exKey(w.id,i);
+      if(exCache[k])items.push({w:w,mIdx:i,meaning:m,ex:exCache[k]});
+    });
+  });
+  if(items.length<4){
+    alert('\u4f8b\u6587\u30af\u30a4\u30ba\u306b\u306f\u4f8b\u6587\u304c4\u4ef6\u4ee5\u4e0a\u5fc5\u8981\u3067\u3059\u3002\u5148\u306b\u300c\u5168\u4f8b\u6587\u3092\u4e00\u62ec\u751f\u6210\u300d\u3092\u5b9f\u884c\u3057\u3066\u304f\u3060\u3055\u3044\u3002');
+    return;
+  }
+  // Shuffle
+  items.sort(function(){return Math.random()-0.5;});
+  qz.list=items;qz.idx=0;qz.correct=0;qz.total=0;qz.answered=false;
+  openOverlay('qz-overlay');qzShow();
+}
+function closeQZ(){closeOverlay('qz-overlay');render();}
+
+function qzShow(){
+  var item=qz.list[qz.idx];
+  var total=qz.list.length;
+  document.getElementById('qz-pfill').style.width=((qz.idx/total)*100).toFixed(1)+'%';
+  document.getElementById('qz-ctr').textContent=(qz.idx+1)+' / '+total;
+  document.getElementById('qz-ex-en').textContent=item.ex.en;
+  document.getElementById('qz-ex-ja').textContent=item.ex.ja;
+  document.getElementById('qz-word').textContent=item.w.en;
+  document.getElementById('qz-result').textContent='';
+  document.getElementById('qz-result').className='qz-result';
+  document.getElementById('qz-acts').style.display='none';
+  document.getElementById('qz-stats').textContent='\u6b63\u89e3\u7387: '+qz.correct+'/'+qz.total;
+  qz.answered=false;
+
+  // Build 4 choices: correct + 3 random wrong from other meanings of same word or other words
+  var correct=item.meaning;
+  var wrongs=[];
+  // First try other meanings of same word
+  item.w.meanings.forEach(function(m,i){if(i!==item.mIdx)wrongs.push(m);});
+  // Fill from other words' meanings
+  var allMeanings=[];
+  POLY.forEach(function(w){if(w.id!==item.w.id)w.meanings.forEach(function(m){allMeanings.push(m);});});
+  allMeanings.sort(function(){return Math.random()-0.5;});
+  allMeanings.forEach(function(m){if(wrongs.length<10&&m!==correct)wrongs.push(m);});
+  wrongs.sort(function(){return Math.random()-0.5;});
+  var choices=[correct,wrongs[0],wrongs[1],wrongs[2]].sort(function(){return Math.random()-0.5;});
+
+  var choicesDiv=document.getElementById('qz-choices');
+  choicesDiv.innerHTML='';
+  choices.forEach(function(c){
+    var btn=document.createElement('button');
+    btn.className='qz-choice';
+    btn.textContent=c;
+    btn.onclick=function(){qzAnswer(c,correct,choices);};
+    choicesDiv.appendChild(btn);
+  });
+  document.getElementById('qz-body').scrollTop=0;
+}
+
+function qzAnswer(chosen,correct,choices){
+  if(qz.answered)return;
+  qz.answered=true;
+  qz.total++;
+  var isCorrect=(chosen===correct);
+  if(isCorrect)qz.correct++;
+  // Update buttons
+  var btns=document.getElementById('qz-choices').querySelectorAll('.qz-choice');
+  btns.forEach(function(btn){
+    btn.setAttribute('disabled','disabled');
+    if(btn.textContent===correct){btn.classList.add(isCorrect&&btn.textContent===chosen?'correct':'reveal');}
+    else if(btn.textContent===chosen&&!isCorrect){btn.classList.add('wrong');}
+  });
+  var res=document.getElementById('qz-result');
+  res.textContent=isCorrect?'\u25cb \u6b63\u89e3\uff01':'\u2715 \u4e0d\u6b63\u89e3\u3002\u6b63\u89e3\uff1a'+correct;
+  res.className='qz-result '+(isCorrect?'ok':'ng');
+  document.getElementById('qz-stats').textContent='\u6b63\u89e3\u7387: '+qz.correct+'/'+qz.total+' ('+(Math.round(qz.correct/qz.total*100))+'%)';
+  document.getElementById('qz-acts').style.display='flex';
+}
+function qzNext(){
+  if(qz.idx<qz.list.length-1){qz.idx++;qz.answered=false;qzShow();}
+  else{setTimeout(function(){alert('\u5b8c\u4e86\uff01 \u6b63\u89e3\u7387: '+qz.correct+'/'+qz.total+' ('+Math.round(qz.correct/qz.total*100)+'%)');closeQZ();},200);}
+}
+
+// keyboard
 document.addEventListener('keydown',function(e){
-  var ov=document.getElementById('fc-overlay');
-  if(!ov||ov.style.display==='none'||ov.style.display==='')return;
-  if(e.key===' '||e.key==='ArrowDown'){e.preventDefault();fcReveal();}
-  else if(e.key==='ArrowRight')fcNext();
-  else if(e.key==='ArrowLeft')fcPrev();
-  else if(e.key==='ArrowUp'){e.preventDefault();fcNextMeaning();}
-  else if(e.key==='o'||e.key==='O'){if(fc.revealed)fcMark('learned');}
-  else if(e.key==='x'||e.key==='X'){if(fc.revealed)fcMark('difficult');}
-  else if(e.key==='Escape')closeFC();
+  var fcOv=document.getElementById('fc-overlay');
+  var qzOv=document.getElementById('qz-overlay');
+  if(fcOv.style.cssText.indexOf('flex')>=0){
+    if(e.key===' '||e.key==='ArrowDown'){e.preventDefault();fcReveal();}
+    else if(e.key==='ArrowRight')fcNext();
+    else if(e.key==='ArrowLeft')fcPrev();
+    else if(e.key==='ArrowUp'){e.preventDefault();fcNextMeaning();}
+    else if(e.key==='o'||e.key==='O'){if(fc.revealed)fcMark('learned');}
+    else if(e.key==='x'||e.key==='X'){if(fc.revealed)fcMark('difficult');}
+    else if(e.key==='Escape')closeFC();
+  } else if(qzOv.style.cssText.indexOf('flex')>=0){
+    if(e.key==='ArrowRight'&&qz.answered)qzNext();
+    else if(e.key==='Escape')closeQZ();
+  }
 });
 
+// ===== INIT =====
 fetch('poly.json')
   .then(function(r){return r.json();})
   .then(function(data){
@@ -452,7 +629,7 @@ fetch('poly.json')
     updateStats();render();
   })
   .catch(function(e){
-    document.getElementById('status-text').textContent='読み込みエラー: '+e.message;
+    document.getElementById('status-text').textContent='\u8aad\u307f\u8fbc\u307f\u30a8\u30e9\u30fc: '+e.message;
   });
 </script>
 
