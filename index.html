@@ -463,6 +463,68 @@ function updateStats(){
   document.getElementById('cnt-d').textContent=v.filter(function(x){return x==='difficult';}).length;
 }
 
+// セクションの id 範囲定義 (sec番号 -> [min, max] の id範囲、両端含む)
+var SEC_RANGES=[
+  null,          // 0: すべて (使わない)
+  [1,25],        // §1
+  [26,47],       // §2
+  [48,86],       // §3
+  [87,132],      // §4
+  [133,159],     // §5
+  [160,191],     // §6
+  [192,247],     // §7
+  [248,294],     // §8
+  [295,332],     // §9
+  [333,379],     // §10
+  [380,409],     // §11
+  [410,435],     // §12
+  [436,491],     // §13
+  [492,520],     // §14
+  [521,574],     // §15
+  [575,604],     // §16
+  [605,638],     // §17
+  [639,674],     // §18
+  [675,717],     // §19
+  [718,770],     // §20
+  [771,809],     // §21
+  [810,861],     // §22
+  [862,905],     // §23
+  [906,951],     // §24
+  [952,999],     // §25
+  [1000,1041],   // §26
+  [1042,1085],   // §27
+  [1086,1138],   // §28
+  [1139,1191],   // §29
+  [1192,1237],   // §30
+  [1238,1281],   // §31
+  [1282,1346],   // §32
+  [1347,1382],   // §33
+  [1383,1421],   // §34
+  [1422,1470],   // §35
+  [1471,1510],   // §36
+  [1511,1555],   // §37
+  [1556,1602],   // §38
+  [1603,1652],   // §39
+  [1653,1721],   // §40
+  [1722,1779],   // §41
+  [1780,1851],   // §42
+  [1852,1899],   // §43
+  [1900,1933],   // §44
+  [1934,1972],   // §45
+  [1973,2007],   // §46
+  [2008,2047],   // §47
+  [2048,2084],   // §48
+  [2085,2128],   // §49
+  [2129,2176]    // §50
+];
+
+function inSection(wordId,sec){
+  if(sec===0)return true;
+  var r=SEC_RANGES[sec];
+  if(!r)return false;
+  return wordId>=r[0]&&wordId<=r[1];
+}
+
 function setSection(sec){
   S.sec=sec;
   document.querySelectorAll('.sec-btn').forEach(function(b){
@@ -482,7 +544,7 @@ document.getElementById('search').addEventListener('input',function(){S.search=t
 
 function getFiltered(){
   var l=POLY.slice();
-  if(S.sec>0)l=l.filter(function(w){return w.sec===S.sec;});
+  if(S.sec>0)l=l.filter(function(w){return inSection(w.id,S.sec);});
   if(S.search)l=l.filter(function(w){return w.en.toLowerCase().includes(S.search);});
   if(S.filter==='learned')l=l.filter(function(w){return w.meanings.some(function(_,i){return getMark(w.id,i)==='learned';});});
   if(S.filter==='maybe')l=l.filter(function(w){return w.meanings.some(function(_,i){return getMark(w.id,i)==='maybe';});});
