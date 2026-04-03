@@ -285,7 +285,41 @@ flex-shrink:0;transition:all 0.15s;line-height:1.3;text-align:center;
     </div>
     <div class="fc-nav">
       <button class="btn btn-sm" onclick="fcPrev()">← 前へ</button>
-      <button class="btn btn
+      <button class="btn btn-sm" onclick="fcRandom50()">&#127922; 50問</button>
+      <button class="btn btn-sm" onclick="fcShuffle()">&#128256;</button>
+      <button class="btn btn-sm" onclick="closeFC()">&#127968; ホームへ</button>
+    </div>
+    <div class="fc-kbd"><kbd>スペース</kbd>で答えを見る &nbsp; <kbd>←</kbd><kbd>→</kbd>で前後 &nbsp; <kbd>O</kbd>覚えた &nbsp; <kbd>X</kbd>苦手</div>
+  </div>
+</div>
+
+<div class="overlay" id="qz-overlay">
+  <div class="ov-header">
+    <span class="ov-title">&#10067; 例文クイズ</span>
+    <span class="ov-ctr" id="qz-ctr">0 / 0</span>
+    <div style="margin-left:auto;display:flex;gap:6px">
+      <button class="btn btn-sm" onclick="qzRandom50()">&#127922; 50問</button>
+      <button class="btn btn-sm" onclick="closeQZ()">&#127968; ホームへ</button>
+    </div>
+  </div>
+  <div class="pbar"><div class="pfill" id="qz-pfill" style="width:0%"></div></div>
+  <div class="ov-body" id="qz-body">
+    <div class="qz-card" id="qz-card">
+      <div class="qz-stats" id="qz-stats">正解率: 0/0</div>
+      <div class="qz-word" id="qz-word">—</div>
+      <div class="qz-ex" id="qz-ex">
+        <div class="qz-ex-en" id="qz-ex-en"></div>
+        <div class="qz-ex-ja" id="qz-ex-ja"></div>
+      </div>
+      <div class="qz-choices" id="qz-choices"></div>
+      <div class="qz-result" id="qz-result"></div>
+      <div class="qz-acts" id="qz-acts" style="display:none">
+        <button class="btn btn-sm" onclick="qzNext()">次へ →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 var POLY=[];
 // exCache key: String(wordId)+'_'+meaningIndex  e.g. "9_0", "9_1"
@@ -299,441 +333,442 @@ var S={search:'',filter:'all',sec:0};
 var fc={list:[],idx:0,mIdx:0,revealed:false};
 var qz={list:[],idx:0,correct:0,total:0,answered:false};
 
-function exKey(wordId,mIdx){return String(wordId)+’_’+String(mIdx);}
+function exKey(wordId,mIdx){return String(wordId)+'_'+String(mIdx);}
 
-function markKey(id,mIdx){return String(id)+’*’+String(mIdx);}
+function markKey(id,mIdx){return String(id)+'_'+String(mIdx);}
 function getMark(id,mIdx){
-if(mIdx===undefined){
-// 単語全体: 全意味の中で最多のマークを返す（カード色用）
-var w=POLY.find(function(x){return x.id===id;});
-if(!w)return null;
-var counts={learned:0,maybe:0,difficult:0};
-w.meanings.forEach(function(*,i){var v=marks[markKey(id,i)];if(v)counts[v]++;});
-var best=null,max=0;
-Object.keys(counts).forEach(function(k){if(counts[k]>max){max=counts[k];best=k;}});
-return max>0?best:null;
-}
-return marks[markKey(id,mIdx)]||null;
+  if(mIdx===undefined){
+    // 単語全体: 全意味の中で最多のマークを返す（カード色用）
+    var w=POLY.find(function(x){return x.id===id;});
+    if(!w)return null;
+    var counts={learned:0,maybe:0,difficult:0};
+    w.meanings.forEach(function(_,i){var v=marks[markKey(id,i)];if(v)counts[v]++;});
+    var best=null,max=0;
+    Object.keys(counts).forEach(function(k){if(counts[k]>max){max=counts[k];best=k;}});
+    return max>0?best:null;
+  }
+  return marks[markKey(id,mIdx)]||null;
 }
 function saveMark(id,type,mIdx){
-var k=(mIdx!==undefined)?markKey(id,mIdx):markKey(id,0);
-if(mIdx===undefined){
-// 後方互換: 全意味に同じマーク
-var w=POLY.find(function(x){return x.id===id;});
-if(w)w.meanings.forEach(function(*,i){marks[markKey(id,i)]=type;});
-} else {
-marks[k]=type;
-}
-try{localStorage.setItem(‘poly_marks’,JSON.stringify(marks));}catch(e){}
-updateStats();
+  var k=(mIdx!==undefined)?markKey(id,mIdx):markKey(id,0);
+  if(mIdx===undefined){
+    // 後方互換: 全意味に同じマーク
+    var w=POLY.find(function(x){return x.id===id;});
+    if(w)w.meanings.forEach(function(_,i){marks[markKey(id,i)]=type;});
+  } else {
+    marks[k]=type;
+  }
+  try{localStorage.setItem('poly_marks',JSON.stringify(marks));}catch(e){}
+  updateStats();
 }
 function updateStats(){
-var v=Object.values(marks);
-document.getElementById(‘cnt-l’).textContent=v.filter(function(x){return x===‘learned’;}).length;
-document.getElementById(‘cnt-d’).textContent=v.filter(function(x){return x===‘difficult’;}).length;
+  var v=Object.values(marks);
+  document.getElementById('cnt-l').textContent=v.filter(function(x){return x==='learned';}).length;
+  document.getElementById('cnt-d').textContent=v.filter(function(x){return x==='difficult';}).length;
 }
 function setSection(sec){
-S.sec=sec;
-document.querySelectorAll(’.sec-btn’).forEach(function(b){
-b.classList.toggle(‘on’,parseInt(b.getAttribute(‘data-sec’))===sec);
-});
-render();
+  S.sec=sec;
+  document.querySelectorAll('.sec-btn').forEach(function(b){
+    b.classList.toggle('on',parseInt(b.getAttribute('data-sec'))===sec);
+  });
+  render();
 }
 function setSection(sec){
-S.sec=sec;
-document.querySelectorAll(’.sec-btn’).forEach(function(b){
-b.classList.toggle(‘on’,parseInt(b.getAttribute(‘data-sec’))===sec);
-});
-render();
+  S.sec=sec;
+  document.querySelectorAll('.sec-btn').forEach(function(b){
+    b.classList.toggle('on',parseInt(b.getAttribute('data-sec'))===sec);
+  });
+  render();
 }
 function setFilter(f,el){
-S.filter=f;
-document.querySelectorAll(’.fbtn’).forEach(function(b){b.classList.remove(‘on’);});
-if(el)el.classList.add(‘on’);
-render();
+  S.filter=f;
+  document.querySelectorAll('.fbtn').forEach(function(b){b.classList.remove('on');});
+  if(el)el.classList.add('on');
+  render();
 }
-document.getElementById(‘search’).addEventListener(‘input’,function(){S.search=this.value.trim().toLowerCase();render();});
+document.getElementById('search').addEventListener('input',function(){S.search=this.value.trim().toLowerCase();render();});
 function getFiltered(){
-var l=POLY.slice();
-if(S.sec>0)l=l.filter(function(w){return w.sec===S.sec;});
-if(S.sec>0)l=l.filter(function(w){return w.sec===S.sec;});
-if(S.search)l=l.filter(function(w){return w.en.toLowerCase().includes(S.search);});
-if(S.filter===‘learned’)l=l.filter(function(w){return w.meanings.some(function(*,i){return getMark(w.id,i)===‘learned’;});});
-if(S.filter===‘maybe’)l=l.filter(function(w){return w.meanings.some(function(*,i){return getMark(w.id,i)===‘maybe’;});});
-if(S.filter===‘difficult’)l=l.filter(function(w){return w.meanings.some(function(*,i){return getMark(w.id,i)===‘difficult’;});});
-if(S.filter===‘unmarked’)l=l.filter(function(w){return w.meanings.every(function(*,i){return !getMark(w.id,i);});});
-return l;
+  var l=POLY.slice();
+  if(S.sec>0)l=l.filter(function(w){return w.sec===S.sec;});
+  if(S.sec>0)l=l.filter(function(w){return w.sec===S.sec;});
+  if(S.search)l=l.filter(function(w){return w.en.toLowerCase().includes(S.search);});
+  if(S.filter==='learned')l=l.filter(function(w){return w.meanings.some(function(_,i){return getMark(w.id,i)==='learned';});});
+  if(S.filter==='maybe')l=l.filter(function(w){return w.meanings.some(function(_,i){return getMark(w.id,i)==='maybe';});});
+  if(S.filter==='difficult')l=l.filter(function(w){return w.meanings.some(function(_,i){return getMark(w.id,i)==='difficult';});});
+  if(S.filter==='unmarked')l=l.filter(function(w){return w.meanings.every(function(_,i){return !getMark(w.id,i);});});
+  return l;
 }
 function render(){
-var fl=getFiltered();
-document.getElementById(‘status-text’).textContent=fl.length+’ \u8a9e / \u5168’+POLY.length+’\u8a9e’;
-var grid=document.getElementById(‘list-view’);
-grid.innerHTML=’’;
-if(fl.length===0){grid.innerHTML=’<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--muted);font-size:0.88rem;">\u8a72\u5f53\u306a\u3057</div>’;return;}
-fl.forEach(function(w){
-var overallMark=getMark(w.id);
-var card=document.createElement(‘div’);
-card.className=‘wcard’+(overallMark===‘learned’?’ st-learned’:overallMark===‘maybe’?’ st-maybe’:overallMark===‘difficult’?’ st-difficult’:’’);
-card.id=‘wcard-’+w.id;
-// header (always visible)
-var header=’<div class="wc-header" onclick="toggleCard('+w.id+')">’
-+’<div class="wc-top"><span class="wc-en">’+w.en+’</span>’
-+’<span class="wc-cnt">’+w.meanings.length+’\u610f\u5473</span>’
-+’<span class="wc-toggle" id="wc-tog-'+w.id+'">\u25bc</span>’
-+’</div></div>’;
-// detail (collapsed by default)
-var detail=’<div class="wc-detail" id="wc-det-'+w.id+'" style="display:none">’;
-w.meanings.forEach(function(meaning,i){
-var mk=getMark(w.id,i);
-var exKey=String(w.id)+’*’+String(i);
-var ex=exCache[exKey];
-detail+=’<div class="wc-meaning-row" id="wc-mr-'+w.id+'-'+i+'">’
-+’<div class="wc-mi-wrap">’
-+’<span class="wc-mnum">’+(i+1)+’.</span>’
-+’<span class="wc-mtext">’+meaning+’</span>’
-+’</div>’
-+(ex?’<div class="wc-ex-en">’+ex.en+’</div>’:’’)
-+’<div class="wc-mk-row">’
-+’<button class="mkb mkb-ok'+(mk==='learned'?' on':'')+'" onclick="doMarkMeaning('+w.id+','+i+',\'learned\',event)">\u25cb \u899a\u3048\u305f</button>’
-+’<button class="mkb mkb-maybe'+(mk==='maybe'?' on':'')+'" onclick="doMarkMeaning('+w.id+','+i+',\'maybe\',event)">? \u5fae\u5999</button>’
-+’<button class="mkb mkb-ng'+(mk==='difficult'?' on':'')+'" onclick="doMarkMeaning('+w.id+','+i+',\'difficult\',event)">\u2715 \u82e6\u624b</button>’
-+’</div>’
-+’</div>’;
-});
-detail+=’</div>’;
-card.innerHTML=header+detail;
-grid.appendChild(card);
-});
+  var fl=getFiltered();
+  document.getElementById('status-text').textContent=fl.length+' \u8a9e / \u5168'+POLY.length+'\u8a9e';
+  var grid=document.getElementById('list-view');
+  grid.innerHTML='';
+  if(fl.length===0){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--muted);font-size:0.88rem;">\u8a72\u5f53\u306a\u3057</div>';return;}
+  fl.forEach(function(w){
+    var overallMark=getMark(w.id);
+    var card=document.createElement('div');
+    card.className='wcard'+(overallMark==='learned'?' st-learned':overallMark==='maybe'?' st-maybe':overallMark==='difficult'?' st-difficult':'');
+    card.id='wcard-'+w.id;
+    // header (always visible)
+    var header='<div class="wc-header" onclick="toggleCard('+w.id+')">'
+      +'<div class="wc-top"><span class="wc-en">'+w.en+'</span>'
+      +'<span class="wc-cnt">'+w.meanings.length+'\u610f\u5473</span>'
+      +'<span class="wc-toggle" id="wc-tog-'+w.id+'">\u25bc</span>'
+      +'</div></div>';
+    // detail (collapsed by default)
+    var detail='<div class="wc-detail" id="wc-det-'+w.id+'" style="display:none">';
+    w.meanings.forEach(function(meaning,i){
+      var mk=getMark(w.id,i);
+      var exKey=String(w.id)+'_'+String(i);
+      var ex=exCache[exKey];
+      detail+='<div class="wc-meaning-row" id="wc-mr-'+w.id+'-'+i+'">'
+        +'<div class="wc-mi-wrap">'
+          +'<span class="wc-mnum">'+(i+1)+'.</span>'
+          +'<span class="wc-mtext">'+meaning+'</span>'
+        +'</div>'
+        +(ex?'<div class="wc-ex-en">'+ex.en+'</div>':'')
+        +'<div class="wc-mk-row">'
+          +'<button class="mkb mkb-ok'+(mk==='learned'?' on':'')+'" onclick="doMarkMeaning('+w.id+','+i+',\'learned\',event)">\u25cb \u899a\u3048\u305f</button>'
+          +'<button class="mkb mkb-maybe'+(mk==='maybe'?' on':'')+'" onclick="doMarkMeaning('+w.id+','+i+',\'maybe\',event)">? \u5fae\u5999</button>'
+          +'<button class="mkb mkb-ng'+(mk==='difficult'?' on':'')+'" onclick="doMarkMeaning('+w.id+','+i+',\'difficult\',event)">\u2715 \u82e6\u624b</button>'
+        +'</div>'
+      +'</div>';
+    });
+    detail+='</div>';
+    card.innerHTML=header+detail;
+    grid.appendChild(card);
+  });
 }
 function toggleCard(id){
-var det=document.getElementById(‘wc-det-’+id);
-var tog=document.getElementById(‘wc-tog-’+id);
-if(!det)return;
-var open=det.style.display===‘none’;
-det.style.display=open?‘block’:‘none’;
-if(tog)tog.textContent=open?’\u25b2’:’\u25bc’;
+  var det=document.getElementById('wc-det-'+id);
+  var tog=document.getElementById('wc-tog-'+id);
+  if(!det)return;
+  var open=det.style.display==='none';
+  det.style.display=open?'block':'none';
+  if(tog)tog.textContent=open?'\u25b2':'\u25bc';
 }
 
 function doMark(id,type,e){
-// 後方互換 (FC mode)
-if(e)e.stopPropagation();
-saveMark(id,type,undefined);
-var card=document.getElementById(‘wcard-’+id);
-if(card){
-var om=getMark(id);
-card.className=‘wcard’+(om===‘learned’?’ st-learned’:om===‘maybe’?’ st-maybe’:om===‘difficult’?’ st-difficult’:’’);
-}
+  // 後方互換 (FC mode)
+  if(e)e.stopPropagation();
+  saveMark(id,type,undefined);
+  var card=document.getElementById('wcard-'+id);
+  if(card){
+    var om=getMark(id);
+    card.className='wcard'+(om==='learned'?' st-learned':om==='maybe'?' st-maybe':om==='difficult'?' st-difficult':'');
+  }
 }
 function doMarkMeaning(id,mIdx,type,e){
-if(e)e.stopPropagation();
-saveMark(id,type,mIdx);
-// update row buttons
-var row=document.getElementById(‘wc-mr-’+id+’-’+mIdx);
-if(row){
-row.querySelectorAll(’.mkb’).forEach(function(b){b.classList.remove(‘on’);});
-var sel=row.querySelector(type===‘learned’?’.mkb-ok’:type===‘maybe’?’.mkb-maybe’:’.mkb-ng’);
-if(sel)sel.classList.add(‘on’);
-}
-// update card top color
-var card=document.getElementById(‘wcard-’+id);
-if(card){
-var om=getMark(id);
-card.className=‘wcard’+(om===‘learned’?’ st-learned’:om===‘maybe’?’ st-maybe’:om===‘difficult’?’ st-difficult’:’’);
-}
+  if(e)e.stopPropagation();
+  saveMark(id,type,mIdx);
+  // update row buttons
+  var row=document.getElementById('wc-mr-'+id+'-'+mIdx);
+  if(row){
+    row.querySelectorAll('.mkb').forEach(function(b){b.classList.remove('on');});
+    var sel=row.querySelector(type==='learned'?'.mkb-ok':type==='maybe'?'.mkb-maybe':'.mkb-ng');
+    if(sel)sel.classList.add('on');
+  }
+  // update card top color
+  var card=document.getElementById('wcard-'+id);
+  if(card){
+    var om=getMark(id);
+    card.className='wcard'+(om==='learned'?' st-learned':om==='maybe'?' st-maybe':om==='difficult'?' st-difficult':'');
+  }
 }
 
 function updateGenBar(){} // gen-bar removed
 
+
 // ===== API: single example =====
 async function fetchOneExample(en,meaning){
-var prompt=‘Write one example sentence (8-12 words) for “’+en+’” meaning: “’+meaning+’”. Return ONLY JSON: {“en”:“sentence”,“ja”:”\u65e5\u672c\u8a9e\u8a33”}’;
-var resp=await fetch(‘https://api.anthropic.com/v1/messages’,{
-method:‘POST’,headers:{‘Content-Type’:‘application/json’},
-body:JSON.stringify({model:‘claude-sonnet-4-20250514’,max_tokens:200,messages:[{role:‘user’,content:prompt}]})
-});
-var data=await resp.json();
-var txt=(data.content&&data.content[0])?data.content[0].text:’’;
-return JSON.parse(txt.replace(/`json|`/g,’’).trim());
+  var prompt='Write one example sentence (8-12 words) for "'+en+'" meaning: "'+meaning+'". Return ONLY JSON: {"en":"sentence","ja":"\u65e5\u672c\u8a9e\u8a33"}';
+  var resp=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:200,messages:[{role:'user',content:prompt}]})
+  });
+  var data=await resp.json();
+  var txt=(data.content&&data.content[0])?data.content[0].text:'';
+  return JSON.parse(txt.replace(/```json|```/g,'').trim());
 }
 
 // ===== FLASHCARD =====
 function openOverlay(id){
-var ov=document.getElementById(id);
-ov.style.cssText=‘display:flex!important;position:fixed!important;top:0!important;left:0!important;right:0!important;bottom:0!important;background:#0c0e14!important;z-index:99999!important;flex-direction:column!important;overflow:hidden!important;’;
-document.body.style.cssText=‘overflow:hidden!important;position:fixed!important;width:100%!important;’;
+  var ov=document.getElementById(id);
+  ov.style.cssText='display:flex!important;position:fixed!important;top:0!important;left:0!important;right:0!important;bottom:0!important;background:#0c0e14!important;z-index:99999!important;flex-direction:column!important;overflow:hidden!important;';
+  document.body.style.cssText='overflow:hidden!important;position:fixed!important;width:100%!important;';
 }
 function closeOverlay(id){
-document.getElementById(id).style.cssText=‘display:none!important;’;
-document.body.style.cssText=’’;
+  document.getElementById(id).style.cssText='display:none!important;';
+  document.body.style.cssText='';
 }
 
 function openFC(){
-var fl=getFiltered();
-if(fl.length===0){alert(’\u8868\u793a\u4e2d\u306e\u5358\u8a9e\u304c\u3042\u308a\u307e\u305b\u3093’);return;}
-fc.list=fl.slice();fc.idx=0;fc.mIdx=0;fc.revealed=false;
-openOverlay(‘fc-overlay’);fcShow();
+  var fl=getFiltered();
+  if(fl.length===0){alert('\u8868\u793a\u4e2d\u306e\u5358\u8a9e\u304c\u3042\u308a\u307e\u305b\u3093');return;}
+  fc.list=fl.slice();fc.idx=0;fc.mIdx=0;fc.revealed=false;
+  openOverlay('fc-overlay');fcShow();
 }
-function closeFC(){closeOverlay(‘fc-overlay’);render();}
+function closeFC(){closeOverlay('fc-overlay');render();}
 
 function fcShow(){
-var w=fc.list[fc.idx],mt=w.meanings.length;
-if(fc.mIdx>=mt)fc.mIdx=0;
-document.getElementById(‘fc-pfill’).style.width=((fc.idx/fc.list.length)*100).toFixed(1)+’%’;
-document.getElementById(‘fc-ctr’).textContent=(fc.idx+1)+’ / ‘+fc.list.length;
-document.getElementById(‘fc-pos’).textContent=’#’+w.id;
-document.getElementById(‘fc-word’).textContent=w.en;
-document.getElementById(‘fc-badge’).textContent=’\u610f\u5473 ‘+(fc.mIdx+1)+’/’+mt;
-document.getElementById(‘fc-meaning’).textContent=w.meanings[fc.mIdx];
-document.getElementById(‘fc-meaning’).classList.remove(‘show’);
-document.getElementById(‘fc-example’).classList.remove(‘show’);
-document.getElementById(‘fc-loading’).classList.remove(‘show’);
-document.getElementById(‘fc-loading’).textContent=’\u4f8b\u6587\u3092\u751f\u6210\u4e2d\u2026’;
-document.getElementById(‘fc-acts’).style.display=‘none’;
-document.getElementById(‘fc-hint’).textContent=’\u30bf\u30c3\u30d7\u3057\u3066\u7b54\u3048\u3092\u898b\u308b’;
-fc.revealed=false;
-var dots=document.getElementById(‘fc-dots’);
-dots.innerHTML=’’;
-for(var i=0;i<mt;i++){
-var d=document.createElement(‘div’);
-d.className=‘fc-dot’+(i===fc.mIdx?’ on’:’’);
-(function(idx){d.onclick=function(){fc.mIdx=idx;fcShow();};})(i);
-dots.appendChild(d);
-}
-document.getElementById(‘fc-body’).scrollTop=0;
+  var w=fc.list[fc.idx],mt=w.meanings.length;
+  if(fc.mIdx>=mt)fc.mIdx=0;
+  document.getElementById('fc-pfill').style.width=((fc.idx/fc.list.length)*100).toFixed(1)+'%';
+  document.getElementById('fc-ctr').textContent=(fc.idx+1)+' / '+fc.list.length;
+  document.getElementById('fc-pos').textContent='#'+w.id;
+  document.getElementById('fc-word').textContent=w.en;
+  document.getElementById('fc-badge').textContent='\u610f\u5473 '+(fc.mIdx+1)+'/'+mt;
+  document.getElementById('fc-meaning').textContent=w.meanings[fc.mIdx];
+  document.getElementById('fc-meaning').classList.remove('show');
+  document.getElementById('fc-example').classList.remove('show');
+  document.getElementById('fc-loading').classList.remove('show');
+  document.getElementById('fc-loading').textContent='\u4f8b\u6587\u3092\u751f\u6210\u4e2d\u2026';
+  document.getElementById('fc-acts').style.display='none';
+  document.getElementById('fc-hint').textContent='\u30bf\u30c3\u30d7\u3057\u3066\u7b54\u3048\u3092\u898b\u308b';
+  fc.revealed=false;
+  var dots=document.getElementById('fc-dots');
+  dots.innerHTML='';
+  for(var i=0;i<mt;i++){
+    var d=document.createElement('div');
+    d.className='fc-dot'+(i===fc.mIdx?' on':'');
+    (function(idx){d.onclick=function(){fc.mIdx=idx;fcShow();};})(i);
+    dots.appendChild(d);
+  }
+  document.getElementById('fc-body').scrollTop=0;
 }
 
 async function fcReveal(){
-if(fc.revealed)return;
-fc.revealed=true;
-var w=fc.list[fc.idx];
-document.getElementById(‘fc-meaning’).classList.add(‘show’);
-document.getElementById(‘fc-acts’).style.display=‘flex’;
-document.getElementById(‘fc-hint’).textContent=’’;
-var k=exKey(w.id,fc.mIdx);
-var ex=exCache[k];
-if(ex){
-document.getElementById(‘fc-ex-en’).textContent=ex.en;
-document.getElementById(‘fc-ex-ja’).textContent=ex.ja;
-document.getElementById(‘fc-example’).classList.add(‘show’);
-}else{
-document.getElementById(‘fc-loading’).classList.add(‘show’);
-try{
-ex=await fetchOneExample(w.en,w.meanings[fc.mIdx]);
-exCache[k]=ex;
-try{localStorage.setItem(‘poly_examples’,JSON.stringify(exCache));}catch(e){}
-document.getElementById(‘fc-ex-en’).textContent=ex.en;
-document.getElementById(‘fc-ex-ja’).textContent=ex.ja;
-document.getElementById(‘fc-example’).classList.add(‘show’);
-}catch(e){
-document.getElementById(‘fc-loading’).textContent=’\u4f8b\u6587\u306e\u53d6\u5f97\u306b\u5931\u6557\u3002\u4e00\u62ec\u751f\u6210\u3092\u304a\u8a66\u3057\u304f\u3060\u3055\u3044\u3002’;
-}
-document.getElementById(‘fc-loading’).classList.remove(‘show’);
-}
+  if(fc.revealed)return;
+  fc.revealed=true;
+  var w=fc.list[fc.idx];
+  document.getElementById('fc-meaning').classList.add('show');
+  document.getElementById('fc-acts').style.display='flex';
+  document.getElementById('fc-hint').textContent='';
+  var k=exKey(w.id,fc.mIdx);
+  var ex=exCache[k];
+  if(ex){
+    document.getElementById('fc-ex-en').textContent=ex.en;
+    document.getElementById('fc-ex-ja').textContent=ex.ja;
+    document.getElementById('fc-example').classList.add('show');
+  }else{
+    document.getElementById('fc-loading').classList.add('show');
+    try{
+      ex=await fetchOneExample(w.en,w.meanings[fc.mIdx]);
+      exCache[k]=ex;
+      try{localStorage.setItem('poly_examples',JSON.stringify(exCache));}catch(e){}
+      document.getElementById('fc-ex-en').textContent=ex.en;
+      document.getElementById('fc-ex-ja').textContent=ex.ja;
+      document.getElementById('fc-example').classList.add('show');
+    }catch(e){
+      document.getElementById('fc-loading').textContent='\u4f8b\u6587\u306e\u53d6\u5f97\u306b\u5931\u6557\u3002\u4e00\u62ec\u751f\u6210\u3092\u304a\u8a66\u3057\u304f\u3060\u3055\u3044\u3002';
+    }
+    document.getElementById('fc-loading').classList.remove('show');
+  }
 }
 function fcNextMeaning(){var w=fc.list[fc.idx];fc.mIdx=(fc.mIdx+1)%w.meanings.length;fcShow();}
 function fcNext(){
-if(fc.idx<fc.list.length-1){fc.idx++;fc.mIdx=0;fcShow();}
-else{setTimeout(function(){alert(’\u5b8c\u4e86\uff01’);closeFC();},200);}
+  if(fc.idx<fc.list.length-1){fc.idx++;fc.mIdx=0;fcShow();}
+  else{setTimeout(function(){alert('\u5b8c\u4e86\uff01');closeFC();},200);}
 }
-function fcPrev(){if(fc.idx>0){fc.idx–;fc.mIdx=0;fcShow();}}
+function fcPrev(){if(fc.idx>0){fc.idx--;fc.mIdx=0;fcShow();}}
 function fcShuffle(){fc.list.sort(function(){return Math.random()-0.5;});fc.idx=0;fc.mIdx=0;fcShow();}
 function showFb(type){
-var fb=document.getElementById(‘fc-fb’),sym=document.getElementById(‘fc-fbsym’);
-if(!fb||!sym)return;
-fb.className=‘fc-fb’;void fb.offsetWidth;
-sym.textContent=type===‘learned’?’\u25cb’:type===‘maybe’?’?’:’\u2715’;
-fb.className=‘fc-fb ‘+(type===‘learned’?‘l’:type===‘maybe’?‘m’:‘d’)+’ show’;
-setTimeout(function(){fb.className=‘fc-fb’;},700);
+  var fb=document.getElementById('fc-fb'),sym=document.getElementById('fc-fbsym');
+  if(!fb||!sym)return;
+  fb.className='fc-fb';void fb.offsetWidth;
+  sym.textContent=type==='learned'?'\u25cb':type==='maybe'?'?':'\u2715';
+  fb.className='fc-fb '+(type==='learned'?'l':type==='maybe'?'m':'d')+' show';
+  setTimeout(function(){fb.className='fc-fb';},700);
 }
 function fcMark(type){var w=fc.list[fc.idx];showFb(type);saveMark(w.id,type,fc.mIdx);setTimeout(fcNext,300);}
 
 // ===== QUIZ MODE =====
 // Quiz: show example sentence + word, pick the correct meaning from 4 choices
 function openQZ(){
-// Build quiz items: only words that have at least one cached example
-var items=[];
-getFiltered().forEach(function(w){
-w.meanings.forEach(function(m,i){
-var k=exKey(w.id,i);
-if(exCache[k])items.push({w:w,mIdx:i,meaning:m,ex:exCache[k]});
-});
-});
-if(items.length<4){
-alert(’\u4f8b\u6587\u30af\u30a4\u30ba\u306b\u306f\u4f8b\u6587\u304c4\u4ef6\u4ee5\u4e0a\u5fc5\u8981\u3067\u3059\u3002\u5148\u306b\u300c\u5168\u4f8b\u6587\u3092\u4e00\u62ec\u751f\u6210\u300d\u3092\u5b9f\u884c\u3057\u3066\u304f\u3060\u3055\u3044\u3002’);
-return;
+  // Build quiz items: only words that have at least one cached example
+  var items=[];
+  getFiltered().forEach(function(w){
+    w.meanings.forEach(function(m,i){
+      var k=exKey(w.id,i);
+      if(exCache[k])items.push({w:w,mIdx:i,meaning:m,ex:exCache[k]});
+    });
+  });
+  if(items.length<4){
+    alert('\u4f8b\u6587\u30af\u30a4\u30ba\u306b\u306f\u4f8b\u6587\u304c4\u4ef6\u4ee5\u4e0a\u5fc5\u8981\u3067\u3059\u3002\u5148\u306b\u300c\u5168\u4f8b\u6587\u3092\u4e00\u62ec\u751f\u6210\u300d\u3092\u5b9f\u884c\u3057\u3066\u304f\u3060\u3055\u3044\u3002');
+    return;
+  }
+  // Shuffle
+  items.sort(function(){return Math.random()-0.5;});
+  qz.list=items;qz.idx=0;qz.correct=0;qz.total=0;qz.answered=false;
+  openOverlay('qz-overlay');qzShow();
 }
-// Shuffle
-items.sort(function(){return Math.random()-0.5;});
-qz.list=items;qz.idx=0;qz.correct=0;qz.total=0;qz.answered=false;
-openOverlay(‘qz-overlay’);qzShow();
-}
-function closeQZ(){closeOverlay(‘qz-overlay’);render();}
+function closeQZ(){closeOverlay('qz-overlay');render();}
 
 function qzShow(){
-var item=qz.list[qz.idx];
-var total=qz.list.length;
-document.getElementById(‘qz-pfill’).style.width=((qz.idx/total)*100).toFixed(1)+’%’;
-document.getElementById(‘qz-ctr’).textContent=(qz.idx+1)+’ / ‘+total;
-document.getElementById(‘qz-ex-en’).textContent=item.ex.en;
-document.getElementById(‘qz-ex-ja’).textContent=’’;
-document.getElementById(‘qz-word’).textContent=item.w.en;
-document.getElementById(‘qz-result’).textContent=’’;
-document.getElementById(‘qz-result’).className=‘qz-result’;
-document.getElementById(‘qz-acts’).style.display=‘none’;
-document.getElementById(‘qz-stats’).textContent=’\u6b63\u89e3\u7387: ‘+qz.correct+’/’+qz.total;
-qz.answered=false;
+  var item=qz.list[qz.idx];
+  var total=qz.list.length;
+  document.getElementById('qz-pfill').style.width=((qz.idx/total)*100).toFixed(1)+'%';
+  document.getElementById('qz-ctr').textContent=(qz.idx+1)+' / '+total;
+  document.getElementById('qz-ex-en').textContent=item.ex.en;
+  document.getElementById('qz-ex-ja').textContent='';
+  document.getElementById('qz-word').textContent=item.w.en;
+  document.getElementById('qz-result').textContent='';
+  document.getElementById('qz-result').className='qz-result';
+  document.getElementById('qz-acts').style.display='none';
+  document.getElementById('qz-stats').textContent='\u6b63\u89e3\u7387: '+qz.correct+'/'+qz.total;
+  qz.answered=false;
 
-// Build 4 choices: correct + at least 1 other meaning of same word + random fillers
-var correct=item.meaning;
-// Other meanings of the SAME word (mandatory)
-var sameWordWrongs=item.w.meanings.filter(function(m,i){return i!==item.mIdx;});
-sameWordWrongs.sort(function(){return Math.random()-0.5;});
-// Random meanings from OTHER words (fillers)
-var otherMeanings=[];
-POLY.forEach(function(w){if(w.id!==item.w.id)w.meanings.forEach(function(m){otherMeanings.push(m);});});
-otherMeanings.sort(function(){return Math.random()-0.5;});
-// Build wrongs: always include at least 1 from same word, fill rest from others
-var wrongs=[];
-// Add 1 mandatory same-word meaning
-if(sameWordWrongs.length>0) wrongs.push(sameWordWrongs[0]);
-// Add more same-word meanings if available (up to 2 more)
-for(var si=1;si<sameWordWrongs.length&&wrongs.length<3;si++) wrongs.push(sameWordWrongs[si]);
-// Fill remaining slots with other-word meanings
-for(var oi=0;oi<otherMeanings.length&&wrongs.length<3;oi++){
-if(otherMeanings[oi]!==correct) wrongs.push(otherMeanings[oi]);
-}
-wrongs.sort(function(){return Math.random()-0.5;});
-var choices=[correct,wrongs[0],wrongs[1],wrongs[2]].sort(function(){return Math.random()-0.5;});
+  // Build 4 choices: correct + at least 1 other meaning of same word + random fillers
+  var correct=item.meaning;
+  // Other meanings of the SAME word (mandatory)
+  var sameWordWrongs=item.w.meanings.filter(function(m,i){return i!==item.mIdx;});
+  sameWordWrongs.sort(function(){return Math.random()-0.5;});
+  // Random meanings from OTHER words (fillers)
+  var otherMeanings=[];
+  POLY.forEach(function(w){if(w.id!==item.w.id)w.meanings.forEach(function(m){otherMeanings.push(m);});});
+  otherMeanings.sort(function(){return Math.random()-0.5;});
+  // Build wrongs: always include at least 1 from same word, fill rest from others
+  var wrongs=[];
+  // Add 1 mandatory same-word meaning
+  if(sameWordWrongs.length>0) wrongs.push(sameWordWrongs[0]);
+  // Add more same-word meanings if available (up to 2 more)
+  for(var si=1;si<sameWordWrongs.length&&wrongs.length<3;si++) wrongs.push(sameWordWrongs[si]);
+  // Fill remaining slots with other-word meanings
+  for(var oi=0;oi<otherMeanings.length&&wrongs.length<3;oi++){
+    if(otherMeanings[oi]!==correct) wrongs.push(otherMeanings[oi]);
+  }
+  wrongs.sort(function(){return Math.random()-0.5;});
+  var choices=[correct,wrongs[0],wrongs[1],wrongs[2]].sort(function(){return Math.random()-0.5;});
 
-var choicesDiv=document.getElementById(‘qz-choices’);
-choicesDiv.innerHTML=’’;
-choices.forEach(function(c){
-var btn=document.createElement(‘button’);
-btn.className=‘qz-choice’;
-btn.textContent=c;
-btn.onclick=function(){qzAnswer(c,correct,choices);};
-choicesDiv.appendChild(btn);
-});
-document.getElementById(‘qz-body’).scrollTop=0;
+  var choicesDiv=document.getElementById('qz-choices');
+  choicesDiv.innerHTML='';
+  choices.forEach(function(c){
+    var btn=document.createElement('button');
+    btn.className='qz-choice';
+    btn.textContent=c;
+    btn.onclick=function(){qzAnswer(c,correct,choices);};
+    choicesDiv.appendChild(btn);
+  });
+  document.getElementById('qz-body').scrollTop=0;
 }
 
 function qzAnswer(chosen,correct,choices){
-if(qz.answered)return;
-qz.answered=true;
-qz.total++;
-var isCorrect=(chosen===correct);
-if(isCorrect)qz.correct++;
-// Update buttons
-var btns=document.getElementById(‘qz-choices’).querySelectorAll(’.qz-choice’);
-btns.forEach(function(btn){
-btn.setAttribute(‘disabled’,‘disabled’);
-if(btn.textContent===correct){btn.classList.add(isCorrect&&btn.textContent===chosen?‘correct’:‘reveal’);}
-else if(btn.textContent===chosen&&!isCorrect){btn.classList.add(‘wrong’);}
-});
-var res=document.getElementById(‘qz-result’);
-res.textContent=isCorrect?’\u25cb \u6b63\u89e3\uff01’:’\u2715 \u4e0d\u6b63\u89e3\u3002\u6b63\u89e3\uff1a’+correct;
-res.className=‘qz-result ‘+(isCorrect?‘ok’:‘ng’);
-document.getElementById(‘qz-stats’).textContent=’\u6b63\u89e3\u7387: ‘+qz.correct+’/’+qz.total+’ (’+(Math.round(qz.correct/qz.total*100))+’%)’;
-document.getElementById(‘qz-acts’).style.display=‘flex’;
+  if(qz.answered)return;
+  qz.answered=true;
+  qz.total++;
+  var isCorrect=(chosen===correct);
+  if(isCorrect)qz.correct++;
+  // Update buttons
+  var btns=document.getElementById('qz-choices').querySelectorAll('.qz-choice');
+  btns.forEach(function(btn){
+    btn.setAttribute('disabled','disabled');
+    if(btn.textContent===correct){btn.classList.add(isCorrect&&btn.textContent===chosen?'correct':'reveal');}
+    else if(btn.textContent===chosen&&!isCorrect){btn.classList.add('wrong');}
+  });
+  var res=document.getElementById('qz-result');
+  res.textContent=isCorrect?'\u25cb \u6b63\u89e3\uff01':'\u2715 \u4e0d\u6b63\u89e3\u3002\u6b63\u89e3\uff1a'+correct;
+  res.className='qz-result '+(isCorrect?'ok':'ng');
+  document.getElementById('qz-stats').textContent='\u6b63\u89e3\u7387: '+qz.correct+'/'+qz.total+' ('+(Math.round(qz.correct/qz.total*100))+'%)';
+  document.getElementById('qz-acts').style.display='flex';
 }
 function qzNext(){
-if(qz.idx<qz.list.length-1){qz.idx++;qz.answered=false;qzShow();}
-else{setTimeout(function(){alert(’\u5b8c\u4e86\uff01 \u6b63\u89e3\u7387: ‘+qz.correct+’/’+qz.total+’ (’+Math.round(qz.correct/qz.total*100)+’%)’);closeQZ();},200);}
+  if(qz.idx<qz.list.length-1){qz.idx++;qz.answered=false;qzShow();}
+  else{setTimeout(function(){alert('\u5b8c\u4e86\uff01 \u6b63\u89e3\u7387: '+qz.correct+'/'+qz.total+' ('+Math.round(qz.correct/qz.total*100)+'%)');closeQZ();},200);}
 }
 
 // keyboard
 function fcRandom50(){
-var filtered=getFiltered();
-if(filtered.length===0){alert(‘表示中の単語がありません’);return;}
-var shuffled=filtered.slice().sort(function(){return Math.random()-0.5;});
-fc.list=shuffled.slice(0,Math.min(50,shuffled.length));
-fc.idx=0;fc.mIdx=0;fc.revealed=false;
-fcShow();
+  var filtered=getFiltered();
+  if(filtered.length===0){alert('表示中の単語がありません');return;}
+  var shuffled=filtered.slice().sort(function(){return Math.random()-0.5;});
+  fc.list=shuffled.slice(0,Math.min(50,shuffled.length));
+  fc.idx=0;fc.mIdx=0;fc.revealed=false;
+  fcShow();
 }
 function openQZRandom50(){
-var items=[];
-getFiltered().forEach(function(w){
-w.meanings.forEach(function(mg,i){
-var k=exKey(w.id,i);
-if(exCache[k])items.push({w:w,mIdx:i,meaning:mg,ex:exCache[k]});
-});
-});
-if(items.length<4){alert(‘例文クイズには例文が4件以上必要です。’);return;}
-items.sort(function(){return Math.random()-0.5;});
-qz.list=items.slice(0,Math.min(50,items.length));
-qz.idx=0;qz.correct=0;qz.total=0;qz.answered=false;
-openOverlay(‘qz-overlay’);qzShow();
+  var items=[];
+  getFiltered().forEach(function(w){
+    w.meanings.forEach(function(mg,i){
+      var k=exKey(w.id,i);
+      if(exCache[k])items.push({w:w,mIdx:i,meaning:mg,ex:exCache[k]});
+    });
+  });
+  if(items.length<4){alert('例文クイズには例文が4件以上必要です。');return;}
+  items.sort(function(){return Math.random()-0.5;});
+  qz.list=items.slice(0,Math.min(50,items.length));
+  qz.idx=0;qz.correct=0;qz.total=0;qz.answered=false;
+  openOverlay('qz-overlay');qzShow();
 }
 function qzRandom50(){
-var items=[];
-getFiltered().forEach(function(w){
-w.meanings.forEach(function(mg,i){
-var k=exKey(w.id,i);
-if(exCache[k])items.push({w:w,mIdx:i,meaning:mg,ex:exCache[k]});
-});
-});
-if(items.length<4){alert(‘例文が4件以上必要です。’);return;}
-items.sort(function(){return Math.random()-0.5;});
-qz.list=items.slice(0,Math.min(50,items.length));
-qz.idx=0;qz.correct=0;qz.total=0;qz.answered=false;
-qzShow();
+  var items=[];
+  getFiltered().forEach(function(w){
+    w.meanings.forEach(function(mg,i){
+      var k=exKey(w.id,i);
+      if(exCache[k])items.push({w:w,mIdx:i,meaning:mg,ex:exCache[k]});
+    });
+  });
+  if(items.length<4){alert('例文が4件以上必要です。');return;}
+  items.sort(function(){return Math.random()-0.5;});
+  qz.list=items.slice(0,Math.min(50,items.length));
+  qz.idx=0;qz.correct=0;qz.total=0;qz.answered=false;
+  qzShow();
 }
-document.addEventListener(‘keydown’,function(e){
-var fcOv=document.getElementById(‘fc-overlay’);
-var qzOv=document.getElementById(‘qz-overlay’);
-if(fcOv.style.cssText.indexOf(‘flex’)>=0){
-if(e.key===’ ’||e.key===‘ArrowDown’){e.preventDefault();fcReveal();}
-else if(e.key===‘ArrowRight’)fcNext();
-else if(e.key===‘ArrowLeft’)fcPrev();
-else if(e.key===‘ArrowUp’){e.preventDefault();fcNextMeaning();}
-else if(e.key===‘o’||e.key===‘O’){if(fc.revealed)fcMark(‘learned’);}
-else if(e.key===‘x’||e.key===‘X’){if(fc.revealed)fcMark(‘difficult’);}
-else if(e.key===‘Escape’)closeFC();
-} else if(qzOv.style.cssText.indexOf(‘flex’)>=0){
-if(e.key===‘ArrowRight’&&qz.answered)qzNext();
-else if(e.key===‘Escape’)closeQZ();
-}
+document.addEventListener('keydown',function(e){
+  var fcOv=document.getElementById('fc-overlay');
+  var qzOv=document.getElementById('qz-overlay');
+  if(fcOv.style.cssText.indexOf('flex')>=0){
+    if(e.key===' '||e.key==='ArrowDown'){e.preventDefault();fcReveal();}
+    else if(e.key==='ArrowRight')fcNext();
+    else if(e.key==='ArrowLeft')fcPrev();
+    else if(e.key==='ArrowUp'){e.preventDefault();fcNextMeaning();}
+    else if(e.key==='o'||e.key==='O'){if(fc.revealed)fcMark('learned');}
+    else if(e.key==='x'||e.key==='X'){if(fc.revealed)fcMark('difficult');}
+    else if(e.key==='Escape')closeFC();
+  } else if(qzOv.style.cssText.indexOf('flex')>=0){
+    if(e.key==='ArrowRight'&&qz.answered)qzNext();
+    else if(e.key==='Escape')closeQZ();
+  }
 });
 
 // ===== INIT =====
-fetch(‘poly.json’)
-.then(function(r){return r.json();})
-.then(function(data){
-POLY=data;
-document.getElementById(‘cnt-total’).textContent=POLY.length;
-updateStats();render();
-})
-.catch(function(e){
-document.getElementById(‘status-text’).textContent=’\u8aad\u307f\u8fbc\u307f\u30a8\u30e9\u30fc: ‘+e.message;
-});
-document.addEventListener(‘keydown’,function(e){
-var fcOv=document.getElementById(‘fc-overlay’);
-var qzOv=document.getElementById(‘qz-overlay’);
-if(fcOv.style.cssText.indexOf(‘flex’)>=0){
-if(e.key===’ ’||e.key===‘ArrowDown’){e.preventDefault();fcReveal();}
-else if(e.key===‘ArrowRight’)fcNext();
-else if(e.key===‘ArrowLeft’)fcPrev();
-else if(e.key===‘ArrowUp’){e.preventDefault();fcNextMeaning();}
-else if(e.key===‘o’||e.key===‘O’){if(fc.revealed)fcMark(‘learned’);}
-else if(e.key===‘x’||e.key===‘X’){if(fc.revealed)fcMark(‘difficult’);}
-else if(e.key===‘Escape’)closeFC();
-} else if(qzOv.style.cssText.indexOf(‘flex’)>=0){
-if(e.key===‘ArrowRight’&&qz.answered)qzNext();
-else if(e.key===‘Escape’)closeQZ();
-}
+fetch('poly.json')
+  .then(function(r){return r.json();})
+  .then(function(data){
+    POLY=data;
+    document.getElementById('cnt-total').textContent=POLY.length;
+    updateStats();render();
+  })
+  .catch(function(e){
+    document.getElementById('status-text').textContent='\u8aad\u307f\u8fbc\u307f\u30a8\u30e9\u30fc: '+e.message;
+  });
+document.addEventListener('keydown',function(e){
+  var fcOv=document.getElementById('fc-overlay');
+  var qzOv=document.getElementById('qz-overlay');
+  if(fcOv.style.cssText.indexOf('flex')>=0){
+    if(e.key===' '||e.key==='ArrowDown'){e.preventDefault();fcReveal();}
+    else if(e.key==='ArrowRight')fcNext();
+    else if(e.key==='ArrowLeft')fcPrev();
+    else if(e.key==='ArrowUp'){e.preventDefault();fcNextMeaning();}
+    else if(e.key==='o'||e.key==='O'){if(fc.revealed)fcMark('learned');}
+    else if(e.key==='x'||e.key==='X'){if(fc.revealed)fcMark('difficult');}
+    else if(e.key==='Escape')closeFC();
+  } else if(qzOv.style.cssText.indexOf('flex')>=0){
+    if(e.key==='ArrowRight'&&qz.answered)qzNext();
+    else if(e.key==='Escape')closeQZ();
+  }
 });
 
 // ===== INIT =====
-fetch(‘poly.json’)
-.then(function(r){return r.json();})
-.then(function(data){
-POLY=data;
-document.getElementById(‘cnt-total’).textContent=POLY.length;
-updateStats();render();
-})
-.catch(function(e){
-document.getElementById(‘status-text’).textContent=’\u8aad\u307f\u8fbc\u307f\u30a8\u30e9\u30fc: ’+e.message;
-});
+fetch('poly.json')
+  .then(function(r){return r.json();})
+  .then(function(data){
+    POLY=data;
+    document.getElementById('cnt-total').textContent=POLY.length;
+    updateStats();render();
+  })
+  .catch(function(e){
+    document.getElementById('status-text').textContent='\u8aad\u307f\u8fbc\u307f\u30a8\u30e9\u30fc: '+e.message;
+  });
 </script>
 
 </body>
