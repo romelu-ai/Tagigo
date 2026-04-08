@@ -256,6 +256,18 @@ min-height:44px;-webkit-tap-highlight-color:transparent;
 .fc-card{padding:20px 16px 16px}
 .ov-body{padding:10px 10px 14px}
 }
+
+/* FC セクション選択セレクトボックス */
+.fc-sec-sel{
+background:var(–card);border:1px solid var(–border2);border-radius:7px;
+padding:5px 8px;color:var(–text);font-family:‘Fira Code’,monospace;font-size:0.75rem;
+outline:none;cursor:pointer;-webkit-appearance:none;appearance:none;
+min-height:32px;min-width:120px;
+}
+.fc-sec-sel:focus{border-color:var(–accent)}
+/* ov-header の2行レイアウト */
+.ov-header-inner{display:flex;align-items:center;gap:6px;flex-wrap:wrap;width:100%}
+.ov-header-range{display:flex;align-items:center;gap:6px;flex-wrap:wrap;width:100%;padding-top:2px}
 </style>
 
 </head>
@@ -350,13 +362,26 @@ min-height:44px;-webkit-tap-highlight-color:transparent;
 <!-- FLASHCARD OVERLAY -->
 
 <div class="overlay" id="fc-overlay">
-  <div class="ov-header">
-    <span class="ov-title">&#128199; 暗記モード</span>
-    <span class="ov-ctr" id="fc-ctr">0 / 0</span>
-    <div style="margin-left:auto;display:flex;gap:5px;flex-wrap:wrap">
-      <button class="btn btn-sm" onclick="fcRandom50()">&#127922; 50問</button>
-      <button class="btn btn-sm" onclick="fcShuffle()">&#128256;</button>
-      <button class="btn btn-sm" onclick="closeFC()">&#127968; ホーム</button>
+  <div class="ov-header" style="flex-direction:column;align-items:stretch;gap:5px;padding:8px 12px;">
+    <!-- 行1: タイトル・進捗・マーク集計・操作ボタン -->
+    <div class="ov-header-inner">
+      <span class="ov-title">&#128199; 暗記モード</span>
+      <span class="ov-ctr" id="fc-ctr">0 / 0</span>
+      <span id="fc-mark-ok"  style="font-family:'Fira Code',monospace;font-size:0.72rem;color:var(--red);">&#9711; 0</span>
+      <span id="fc-mark-mb"  style="font-family:'Fira Code',monospace;font-size:0.72rem;color:var(--gold);">? 0</span>
+      <span id="fc-mark-ng"  style="font-family:'Fira Code',monospace;font-size:0.72rem;color:var(--blue);">&#10005; 0</span>
+      <div style="margin-left:auto;display:flex;gap:5px;flex-wrap:wrap;">
+        <button class="btn btn-sm" onclick="fcRandom50()">&#127922; 50問</button>
+        <button class="btn btn-sm" onclick="fcShuffle()">&#128256;</button>
+        <button class="btn btn-sm" onclick="closeFC()">&#127968; ホーム</button>
+      </div>
+    </div>
+    <!-- 行2: セクション範囲絞り込み -->
+    <div class="ov-header-range">
+      <select id="fc-sec-from" class="fc-sec-sel"></select>
+      <span style="font-size:0.82rem;color:var(--muted2);">〜</span>
+      <select id="fc-sec-to" class="fc-sec-sel"></select>
+      <button class="btn btn-sm" style="border-color:var(--accent);color:var(--accent);" onclick="fcApplySecRange()">適用</button>
     </div>
   </div>
   <div class="pbar"><div class="pfill" id="fc-pfill" style="width:0%"></div></div>
@@ -645,12 +670,78 @@ function closeOverlay(id){
 }
 
 // ===== FLASHCARD =====
+// セクションセレクトを初期化（POLY読み込み後に呼ぶ）
+function fcInitSecSelects(){
+  var fromSel=document.getElementById('fc-sec-from');
+  var toSel=document.getElementById('fc-sec-to');
+  fromSel.innerHTML='';toSel.innerHTML='';
+  // §0 = すべて
+  var allOpt=document.createElement('option');allOpt.value=0;allOpt.textContent='すべて';
+  fromSel.appendChild(allOpt.cloneNode(true));
+  toSel.appendChild(allOpt.cloneNode(true));
+  for(var i=1;i<SEC_RANGES.length;i++){
+    var r=SEC_RANGES[i];
+    var label='§'+i+' ('+r[0]+'-'+r[1]+')';
+    var o1=document.createElement('option');o1.value=i;o1.textContent=label;fromSel.appendChild(o1);
+    var o2=document.createElement('option');o2.value=i;o2.textContent=label;toSel.appendChild(o2);
+  }
+  // デフォルト: ホーム画面の現在セクション設定を反映
+  fromSel.value=S.sec;
+  toSel.value=S.sec;
+}
+
+// セクション範囲を適用してFCリストを再構築
+function fcApplySecRange(){
+  var fromV=parseInt(document.getElementById('fc-sec-from').value)||0;
+  var toV  =parseInt(document.getElementById('fc-sec-to').value)||0;
+  // toV < fromV の場合は swap
+  if(fromV>0&&toV>0&&toV<fromV){var tmp=fromV;fromV=toV;toV=tmp;}
+  // 対象単語を絞り込み
+  var base=getFiltered(); // 既存フィルタ（マーク・検索）も維持
+  var result;
+  if(fromV===0&&toV===0){
+    result=base.slice();
+  } else if(fromV===0){
+    result=base.filter(function(w){return inSection(w.id,toV)||w.id<=SEC_RANGES[toV][1];});
+  } else if(toV===0){
+    result=base.filter(function(w){return w.id>=SEC_RANGES[fromV][0];});
+  } else {
+    var minId=SEC_RANGES[fromV][0];
+    var maxId=SEC_RANGES[toV][1];
+    result=base.filter(function(w){return w.id>=minId&&w.id<=maxId;});
+  }
+  if(result.length===0){alert('該当する単語がありません');return;}
+  fc.list=result.slice();fc.idx=0;fc.revealed=false;
+  fcUpdateMarkCounts();
+  fcShow();
+}
+
+// FCリスト内のマーク集計を更新
+function fcUpdateMarkCounts(){
+  var ok=0,mb=0,ng=0;
+  fc.list.forEach(function(w){
+    var m=getMark(w.id);
+    if(m==='learned')ok++;
+    else if(m==='maybe')mb++;
+    else if(m==='difficult')ng++;
+  });
+  document.getElementById('fc-mark-ok').textContent='○ '+ok;
+  document.getElementById('fc-mark-mb').textContent='? '+mb;
+  document.getElementById('fc-mark-ng').textContent='✕ '+ng;
+}
+
 // 意味は分けず、1枚のカードに全意味まとめて表示する
 function openFC(){
   var fl=getFiltered();
   if(fl.length===0){alert('表示中の単語がありません');return;}
   fc.list=fl.slice();fc.idx=0;fc.revealed=false;
-  openOverlay('fc-overlay');fcShow();
+  // セレクトをホームの現在セクションに合わせてセット
+  var fromSel=document.getElementById('fc-sec-from');
+  var toSel=document.getElementById('fc-sec-to');
+  if(fromSel){fromSel.value=S.sec;toSel.value=S.sec;}
+  openOverlay('fc-overlay');
+  fcUpdateMarkCounts();
+  fcShow();
 }
 function closeFC(){closeOverlay('fc-overlay');render();}
 
@@ -720,6 +811,7 @@ function fcMark(type){
   showFb(type);
   // 全意味に同じマークをつける
   saveMark(w.id,type,undefined);
+  fcUpdateMarkCounts();
   setTimeout(fcNext,350);
 }
 
@@ -857,7 +949,9 @@ fetch('poly.json')
   .then(function(data){
     POLY=data;
     document.getElementById('cnt-total').textContent=POLY.length;
-    updateStats();render();
+    updateStats();
+    fcInitSecSelects();  // セクション選択肢を生成
+    render();
   })
   .catch(function(e){
     document.getElementById('status-text').textContent='読み込みエラー: '+e.message;
