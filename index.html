@@ -464,6 +464,14 @@ min-height:34px;flex:1;min-width:120px;max-width:240px;
   <div class="pbar"><div class="pfill" id="gen-pfill" style="width:0%"></div></div>
   <div class="ov-body" id="gen-body" style="align-items:stretch;gap:10px;">
 
+    <!-- API キー -->
+    <div class="gen-range-row" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 12px;gap:8px;">
+      <span style="font-size:0.75rem;color:var(--muted2);white-space:nowrap;flex-shrink:0;">🔑 APIキー:</span>
+      <input type="password" id="gen-apikey" placeholder="sk-ant-api03-…" style="flex:1;min-width:180px;background:var(--bg);border:1px solid var(--border2);border-radius:7px;padding:6px 10px;color:var(--text);font-family:'Fira Code',monospace;font-size:0.75rem;outline:none;">
+      <button class="btn btn-sm" onclick="genSaveKey()" style="border-color:var(--green);color:var(--green);flex-shrink:0;">保存</button>
+      <span id="gen-key-status" style="font-size:0.7rem;color:var(--muted2);white-space:nowrap;flex-shrink:0;"></span>
+    </div>
+
     <!-- セクション範囲 -->
     <div class="gen-range-row">
       <span style="font-size:0.75rem;color:var(--muted2);white-space:nowrap;">§ 範囲:</span>
@@ -675,13 +683,52 @@ function doMarkMeaning(id,mIdx,type,e){
   }
 }
 
+// ===== API KEY =====
+function genLoadKey(){
+  try{
+    var k=localStorage.getItem('poly_apikey')||'';
+    var el=document.getElementById('gen-apikey');
+    if(el&&k){el.value=k;genSetKeyStatus(true);}
+  }catch(e){}
+}
+function genSaveKey(){
+  var el=document.getElementById('gen-apikey');
+  if(!el)return;
+  var k=el.value.trim();
+  try{localStorage.setItem('poly_apikey',k);}catch(e){}
+  genSetKeyStatus(!!k);
+}
+function genSetKeyStatus(ok){
+  var el=document.getElementById('gen-key-status');
+  if(!el)return;
+  el.textContent=ok?'✓ 保存済み':'';
+  el.style.color=ok?'var(--green)':'var(--muted2)';
+}
+function genGetKey(){
+  var el=document.getElementById('gen-apikey');
+  if(el&&el.value.trim())return el.value.trim();
+  try{return localStorage.getItem('poly_apikey')||'';}catch(e){return '';}
+}
+
 // ===== API =====
 async function fetchOneExample(en,meaning){
+  var apiKey=genGetKey();
+  if(!apiKey)throw new Error('APIキーが未入力です。入力欄にキーを入力して「保存」を押してください。');
   var prompt='Write one example sentence (8-12 words) for "'+en+'" meaning: "'+meaning+'". Return ONLY JSON with no extra text: {"en":"sentence","ja":"日本語訳"}';
   var resp=await fetch('https://api.anthropic.com/v1/messages',{
-    method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:200,messages:[{role:'user',content:prompt}]})
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'x-api-key':apiKey,
+      'anthropic-version':'2023-06-01',
+      'anthropic-dangerous-direct-browser-access':'true'
+    },
+    body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:200,messages:[{role:'user',content:prompt}]})
   });
+  if(!resp.ok){
+    var errData=await resp.json().catch(function(){return{};});
+    throw new Error('API Error '+resp.status+': '+(errData.error&&errData.error.message||resp.statusText));
+  }
   var data=await resp.json();
   var txt=(data.content&&data.content[0])?data.content[0].text:'';
   return JSON.parse(txt.replace(/```json|```/g,'').trim());
@@ -757,6 +804,7 @@ function openGen(){
   openOverlay('gen-overlay');
   gen.errCount=0;
   genUpdateStats();
+  genLoadKey();
 }
 function closeGen(){
   if(gen.running){gen.stopFlag=true;}
