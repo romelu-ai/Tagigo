@@ -26,7 +26,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 #header{
 position:sticky;top:0;z-index:50;
 background:rgba(12,14,20,0.97);backdrop-filter:blur(12px);
-border-bottom:1px solid var(–border);
+border-bottom:1px solid var(--border);
 padding:0 12px;height:auto;min-height:48px;
 display:flex;flex-direction:column;gap:0;
 }
@@ -34,77 +34,77 @@ display:flex;flex-direction:column;gap:0;
 display:flex;align-items:center;gap:8px;
 min-height:48px;flex-wrap:wrap;
 }
-.logo{font-family:‘Playfair Display’,serif;font-size:1rem;font-weight:700;color:var(–gold);white-space:nowrap;flex-shrink:0}
-.logo em{font-style:italic;color:var(–accent);font-size:0.8em;margin-left:3px}
-.hpill{font-family:‘Fira Code’,monospace;font-size:0.68rem;color:var(–muted2);background:var(–card);border:1px solid var(–border);border-radius:20px;padding:2px 8px;white-space:nowrap}
-.hpill b{color:var(–accent)}
+.logo{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--gold);white-space:nowrap;flex-shrink:0}
+.logo em{font-style:italic;color:var(--accent);font-size:0.8em;margin-left:3px}
+.hpill{font-family:'Fira Code',monospace;font-size:0.68rem;color:var(--muted2);background:var(--card);border:1px solid var(--border);border-radius:20px;padding:2px 8px;white-space:nowrap}
+.hpill b{color:var(--accent)}
 .hdr-r{margin-left:auto;display:flex;gap:5px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end}
 
 .btn{
 display:inline-flex;align-items:center;gap:4px;
-background:var(–card);border:1px solid var(–border2);border-radius:8px;
-padding:7px 11px;color:var(–muted2);
-font-family:‘Noto Sans JP’,sans-serif;font-size:0.78rem;
+background:var(--card);border:1px solid var(--border2);border-radius:8px;
+padding:7px 11px;color:var(--muted2);
+font-family:'Noto Sans JP',sans-serif;font-size:0.78rem;
 cursor:pointer;transition:all 0.15s;white-space:nowrap;line-height:1;
 min-height:36px;-webkit-tap-highlight-color:transparent;
 }
-.btn:hover,.btn:active{border-color:var(–accent);color:var(–accent);background:rgba(124,158,248,0.1)}
+.btn:hover,.btn:active{border-color:var(--accent);color:var(--accent);background:rgba(124,158,248,0.1)}
 .btn-gold{background:linear-gradient(135deg,#b8940a,#f5c842);border-color:#f5c842;color:#1a1000;font-weight:700}
 .btn-gold:hover,.btn-gold:active{opacity:0.88;color:#1a1000;background:linear-gradient(135deg,#b8940a,#f5c842)}
-.btn-purple{background:rgba(181,123,238,0.15);border-color:rgba(181,123,238,0.5);color:var(–purple)}
-.btn-purple:hover,.btn-purple:active{background:rgba(181,123,238,0.28);color:var(–purple);border-color:var(–purple)}
+.btn-purple{background:rgba(181,123,238,0.15);border-color:rgba(181,123,238,0.5);color:var(--purple)}
+.btn-purple:hover,.btn-purple:active{background:rgba(181,123,238,0.28);color:var(--purple);border-color:var(--purple)}
 .btn-sm{padding:6px 10px;font-size:0.75rem;border-radius:6px;min-height:32px}
 
 /* ===== CONTROLS ===== */
 #controls{
-background:var(–bg2);border-bottom:1px solid var(–border);
+background:var(--bg2);border-bottom:1px solid var(--border);
 padding:8px 12px;display:flex;gap:6px;align-items:center;flex-wrap:wrap;
 }
 .sbox{position:relative;flex:1;min-width:130px;max-width:260px}
-.sbox svg{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(–muted);pointer-events:none}
-input[type=“text”]{
-width:100%;background:var(–card);border:1px solid var(–border2);border-radius:8px;
-padding:8px 10px 8px 30px;color:var(–text);
-font-family:‘Noto Sans JP’,sans-serif;font-size:0.82rem;
+.sbox svg{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+input[type="text"]{
+width:100%;background:var(--card);border:1px solid var(--border2);border-radius:8px;
+padding:8px 10px 8px 30px;color:var(--text);
+font-family:'Noto Sans JP',sans-serif;font-size:0.82rem;
 outline:none;transition:border-color 0.18s;
 -webkit-appearance:none;
 }
-input[type=“text”]:focus{border-color:var(–accent)}
-input[type=“text”]::placeholder{color:var(–muted)}
+input[type="text"]:focus{border-color:var(--accent)}
+input[type="text"]::placeholder{color:var(--muted)}
 .filter-row{display:flex;gap:4px;flex-wrap:wrap}
 .fbtn{
-background:var(–card);border:1px solid var(–border);border-radius:6px;
-padding:5px 10px;color:var(–muted2);font-size:0.72rem;
-cursor:pointer;font-family:‘Noto Sans JP’,sans-serif;
+background:var(--card);border:1px solid var(--border);border-radius:6px;
+padding:5px 10px;color:var(--muted2);font-size:0.72rem;
+cursor:pointer;font-family:'Noto Sans JP',sans-serif;
 transition:all 0.15s;white-space:nowrap;
 min-height:32px;-webkit-tap-highlight-color:transparent;
 }
-.fbtn.on{border-color:var(–accent);color:var(–accent);background:rgba(124,158,248,0.1)}
-.fbtn.fl.on{border-color:var(–red);color:var(–red);background:var(–red-dim)}
-.fbtn.fm.on{border-color:var(–gold);color:var(–gold);background:var(–gold-dim)}
-.fbtn.fd.on{border-color:var(–blue);color:var(–blue);background:var(–blue-dim)}
+.fbtn.on{border-color:var(--accent);color:var(--accent);background:rgba(124,158,248,0.1)}
+.fbtn.fl.on{border-color:var(--red);color:var(--red);background:var(--red-dim)}
+.fbtn.fm.on{border-color:var(--gold);color:var(--gold);background:var(--gold-dim)}
+.fbtn.fd.on{border-color:var(--blue);color:var(--blue);background:var(--blue-dim)}
 
 /* ===== SECTION BAR ===== */
 #sec-bar{
-background:var(–bg2);border-bottom:1px solid var(–border);
+background:var(--bg2);border-bottom:1px solid var(--border);
 padding:6px 12px;overflow-x:auto;-webkit-overflow-scrolling:touch;
 display:flex;gap:4px;align-items:center;flex-wrap:nowrap;
 }
 #sec-bar::-webkit-scrollbar{height:3px}
-#sec-bar::-webkit-scrollbar-thumb{background:var(–border2);border-radius:2px}
-.sec-label{font-family:‘Fira Code’,monospace;font-size:0.68rem;color:var(–muted);white-space:nowrap;flex-shrink:0;margin-right:2px}
+#sec-bar::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.sec-label{font-family:'Fira Code',monospace;font-size:0.68rem;color:var(--muted);white-space:nowrap;flex-shrink:0;margin-right:2px}
 .sec-btn{
-font-family:‘Fira Code’,monospace;font-size:0.62rem;
-background:var(–card);border:1px solid var(–border);border-radius:5px;
-padding:3px 6px;color:var(–muted2);cursor:pointer;white-space:nowrap;
+font-family:'Fira Code',monospace;font-size:0.62rem;
+background:var(--card);border:1px solid var(--border);border-radius:5px;
+padding:3px 6px;color:var(--muted2);cursor:pointer;white-space:nowrap;
 flex-shrink:0;transition:all 0.15s;line-height:1.3;text-align:center;
 min-height:32px;-webkit-tap-highlight-color:transparent;
 }
-.sec-btn:hover,.sec-btn:active{border-color:var(–accent);color:var(–accent)}
-.sec-btn.on{border-color:var(–gold);color:var(–gold);background:var(–gold-dim)}
+.sec-btn:hover,.sec-btn:active{border-color:var(--accent);color:var(--accent)}
+.sec-btn.on{border-color:var(--gold);color:var(--gold);background:var(--gold-dim)}
 
 /* ===== STATUS ===== */
-#statusbar{padding:6px 12px;font-family:‘Fira Code’,monospace;font-size:0.7rem;color:var(–muted)}
+#statusbar{padding:6px 12px;font-family:'Fira Code',monospace;font-size:0.7rem;color:var(--muted)}
 
 /* ===== LIST VIEW ===== */
 #list-view{
@@ -121,30 +121,30 @@ gap:6px;
 #list-view{grid-template-columns:1fr;}
 }
 
-.wcard{background:var(–card);border:1px solid var(–border);border-radius:var(–r);padding:11px 13px;transition:all 0.18s;position:relative;overflow:hidden;cursor:default;}
-.wcard::before{content:’’;position:absolute;top:0;left:0;right:0;height:2px;opacity:0;transition:opacity 0.2s}
-.wcard.st-learned::before{background:var(–red);opacity:1}
-.wcard.st-maybe::before{background:var(–gold);opacity:1}
-.wcard.st-difficult::before{background:var(–blue);opacity:1}
-.wcard:hover{border-color:var(–border2);background:var(–card2)}
+.wcard{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:11px 13px;transition:all 0.18s;position:relative;overflow:hidden;cursor:default;}
+.wcard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;opacity:0;transition:opacity 0.2s}
+.wcard.st-learned::before{background:var(--red);opacity:1}
+.wcard.st-maybe::before{background:var(--gold);opacity:1}
+.wcard.st-difficult::before{background:var(--blue);opacity:1}
+.wcard:hover{border-color:var(--border2);background:var(--card2)}
 .wc-header{cursor:pointer;-webkit-tap-highlight-color:transparent;}
-.wc-header:hover .wc-en,.wc-header:active .wc-en{color:var(–accent)}
+.wc-header:hover .wc-en,.wc-header:active .wc-en{color:var(--accent)}
 .wc-top{display:flex;align-items:flex-start;gap:6px}
-.wc-en{font-family:‘Playfair Display’,serif;font-size:1rem;font-weight:700;color:var(–text);flex:1;line-height:1.2;transition:color 0.15s}
-.wc-cnt{font-family:‘Fira Code’,monospace;font-size:0.6rem;color:var(–accent);background:rgba(124,158,248,0.12);border:1px solid rgba(124,158,248,0.25);border-radius:10px;padding:2px 5px;white-space:nowrap;flex-shrink:0;margin-top:2px}
-.wc-toggle{font-size:0.62rem;color:var(–muted);flex-shrink:0;margin-top:4px}
-.wc-detail{padding-top:8px;border-top:1px solid var(–border);margin-top:8px;display:flex;flex-direction:column;gap:8px}
-.wc-meaning-row{padding:7px 0;border-bottom:1px solid var(–border)}
+.wc-en{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--text);flex:1;line-height:1.2;transition:color 0.15s}
+.wc-cnt{font-family:'Fira Code',monospace;font-size:0.6rem;color:var(--accent);background:rgba(124,158,248,0.12);border:1px solid rgba(124,158,248,0.25);border-radius:10px;padding:2px 5px;white-space:nowrap;flex-shrink:0;margin-top:2px}
+.wc-toggle{font-size:0.62rem;color:var(--muted);flex-shrink:0;margin-top:4px}
+.wc-detail{padding-top:8px;border-top:1px solid var(--border);margin-top:8px;display:flex;flex-direction:column;gap:8px}
+.wc-meaning-row{padding:7px 0;border-bottom:1px solid var(--border)}
 .wc-meaning-row:last-child{border-bottom:none;padding-bottom:0}
 .wc-mi-wrap{display:flex;gap:5px;align-items:baseline;margin-bottom:4px}
-.wc-mnum{font-family:‘Fira Code’,monospace;font-size:0.6rem;color:var(–accent);flex-shrink:0}
-.wc-mtext{font-size:0.76rem;color:var(–muted2);line-height:1.5}
-.wc-ex-en{font-size:0.72rem;color:var(–text);font-style:italic;margin:3px 0 5px 13px;padding:4px 7px;background:rgba(124,158,248,0.06);border-left:2px solid var(–accent);border-radius:0 4px 4px 0;line-height:1.5}
+.wc-mnum{font-family:'Fira Code',monospace;font-size:0.6rem;color:var(--accent);flex-shrink:0}
+.wc-mtext{font-size:0.76rem;color:var(--muted2);line-height:1.5}
+.wc-ex-en{font-size:0.72rem;color:var(--text);font-style:italic;margin:3px 0 5px 13px;padding:4px 7px;background:rgba(124,158,248,0.06);border-left:2px solid var(--accent);border-radius:0 4px 4px 0;line-height:1.5}
 .wc-mk-row{display:flex;gap:4px;flex-wrap:wrap;margin-left:13px}
-.mkb{font-size:0.65rem;padding:4px 8px;border-radius:4px;cursor:pointer;font-family:‘Noto Sans JP’,sans-serif;border:1px solid;transition:all 0.15s;white-space:nowrap;min-height:28px;-webkit-tap-highlight-color:transparent;}
-.mkb-ok{color:var(–red);border-color:rgba(255,107,122,0.4);background:var(–red-dim)}.mkb-ok.on,.mkb-ok:active{background:rgba(255,107,122,0.28)}
-.mkb-maybe{color:var(–gold);border-color:rgba(245,200,66,0.4);background:var(–gold-dim)}.mkb-maybe.on,.mkb-maybe:active{background:rgba(245,200,66,0.28)}
-.mkb-ng{color:var(–blue);border-color:rgba(108,143,255,0.4);background:var(–blue-dim)}.mkb-ng.on,.mkb-ng:active{background:rgba(108,143,255,0.28)}
+.mkb{font-size:0.65rem;padding:4px 8px;border-radius:4px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;border:1px solid;transition:all 0.15s;white-space:nowrap;min-height:28px;-webkit-tap-highlight-color:transparent;}
+.mkb-ok{color:var(--red);border-color:rgba(255,107,122,0.4);background:var(--red-dim)}.mkb-ok.on,.mkb-ok:active{background:rgba(255,107,122,0.28)}
+.mkb-maybe{color:var(--gold);border-color:rgba(245,200,66,0.4);background:var(--gold-dim)}.mkb-maybe.on,.mkb-maybe:active{background:rgba(245,200,66,0.28)}
+.mkb-ng{color:var(--blue);border-color:rgba(108,143,255,0.4);background:var(--blue-dim)}.mkb-ng.on,.mkb-ng:active{background:rgba(108,143,255,0.28)}
 
 /* ===== OVERLAY BASE ===== */
 .overlay{
@@ -153,103 +153,92 @@ background:#0c0e14;z-index:99999;flex-direction:column;overflow:hidden;
 }
 .ov-header{
 display:flex;align-items:center;gap:6px;
-padding:8px 12px;border-bottom:1px solid var(–border);
+padding:8px 12px;border-bottom:1px solid var(--border);
 background:#12151f;flex-shrink:0;flex-wrap:wrap;
 min-height:48px;
 }
-.ov-title{font-size:0.8rem;color:var(–muted2);white-space:nowrap;flex-shrink:0}
-.ov-ctr{font-family:‘Fira Code’,monospace;font-size:0.74rem;color:var(–muted2)}
-.pbar{height:3px;background:var(–border);flex-shrink:0}
-.pfill{height:100%;background:linear-gradient(90deg,var(–accent),var(–purple));transition:width 0.3s}
+.ov-title{font-size:0.8rem;color:var(--muted2);white-space:nowrap;flex-shrink:0}
+.ov-ctr{font-family:'Fira Code',monospace;font-size:0.74rem;color:var(--muted2)}
+.pbar{height:3px;background:var(--border);flex-shrink:0}
+.pfill{height:100%;background:linear-gradient(90deg,var(--accent),var(--purple));transition:width 0.3s}
 .ov-body{
 flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;
 padding:12px 12px 16px;overflow-y:auto;-webkit-overflow-scrolling:touch;gap:10px;
 }
 
 /* ===== FLASHCARD ===== */
-/* FC: 意味をまとめて1枚に表示 */
 .fc-card{
 width:100%;max-width:520px;flex-shrink:0;
-background:var(–card);border:1px solid var(–border2);
+background:var(--card);border:1px solid var(--border2);
 border-radius:16px;padding:24px 20px 18px;text-align:center;
 cursor:pointer;transition:border-color 0.2s;
 position:relative;user-select:none;overflow:hidden;
 -webkit-tap-highlight-color:transparent;
 }
 .fc-card:active{opacity:0.95}
-.fc-card:hover{border-color:var(–accent)}
-.fc-pos{position:absolute;top:10px;left:12px;font-family:‘Fira Code’,monospace;font-size:0.6rem;color:var(–muted)}
-.fc-hint{position:absolute;bottom:9px;right:11px;font-size:0.6rem;color:var(–muted)}
-.fc-word{font-family:‘Playfair Display’,serif;font-size:1.75rem;font-weight:700;color:var(–text);line-height:1.2;margin-bottom:6px}
-.fc-badge{display:inline-block;font-family:‘Fira Code’,monospace;font-size:0.63rem;color:var(–accent);border:1px solid rgba(124,158,248,0.3);border-radius:10px;padding:2px 8px;margin-bottom:10px}
-
-/* 意味リスト (全部まとめて) */
-.fc-meanings{
-display:none;text-align:left;margin-top:4px;
-}
+.fc-card:hover{border-color:var(--accent)}
+.fc-pos{position:absolute;top:10px;left:12px;font-family:'Fira Code',monospace;font-size:0.6rem;color:var(--muted)}
+.fc-hint{position:absolute;bottom:9px;right:11px;font-size:0.6rem;color:var(--muted)}
+.fc-word{font-family:'Playfair Display',serif;font-size:1.75rem;font-weight:700;color:var(--text);line-height:1.2;margin-bottom:6px}
+.fc-badge{display:inline-block;font-family:'Fira Code',monospace;font-size:0.63rem;color:var(--accent);border:1px solid rgba(124,158,248,0.3);border-radius:10px;padding:2px 8px;margin-bottom:10px}
+.fc-meanings{display:none;text-align:left;margin-top:4px;}
 .fc-meanings.show{display:block}
 .fc-meaning-item{
 display:flex;gap:6px;align-items:baseline;
-padding:5px 0;border-bottom:1px solid var(–border);
-font-size:0.84rem;color:var(–muted2);line-height:1.55;
+padding:5px 0;border-bottom:1px solid var(--border);
+font-size:0.84rem;color:var(--muted2);line-height:1.55;
 }
 .fc-meaning-item:last-child{border-bottom:none}
-.fc-mnum{font-family:‘Fira Code’,monospace;font-size:0.6rem;color:var(–accent);flex-shrink:0;margin-top:2px}
+.fc-mnum{font-family:'Fira Code',monospace;font-size:0.6rem;color:var(--accent);flex-shrink:0;margin-top:2px}
 .fc-mtext{flex:1}
-
 .fc-fb{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:0;border-radius:16px;z-index:10}
 .fc-fb.show{animation:fbFade 0.65s ease-out forwards}
 .fc-fb.l{background:rgba(255,107,122,0.1)}.fc-fb.m{background:rgba(245,200,66,0.1)}.fc-fb.d{background:rgba(108,143,255,0.1)}
 .fc-fbsym{font-size:4rem;line-height:1;animation:symPop 0.5s cubic-bezier(0.175,0.885,0.32,1.275) forwards}
-.fc-fb.l .fc-fbsym{color:var(–red)}.fc-fb.m .fc-fbsym{color:var(–gold)}.fc-fb.d .fc-fbsym{color:var(–blue)}
+.fc-fb.l .fc-fbsym{color:var(--red)}.fc-fb.m .fc-fbsym{color:var(--gold)}.fc-fb.d .fc-fbsym{color:var(--blue)}
 @keyframes fbFade{0%{opacity:1}60%{opacity:1}100%{opacity:0}}
 @keyframes symPop{0%{transform:scale(0.2);opacity:0}60%{transform:scale(1.2);opacity:1}100%{transform:scale(1);opacity:1}}
-
-/* FC アクションボタン */
 .fc-acts{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;flex-shrink:0;width:100%;max-width:520px}
 .fc-btn{
 border-radius:10px;padding:10px 14px;font-size:0.82rem;
-cursor:pointer;font-family:‘Noto Sans JP’,sans-serif;
+cursor:pointer;font-family:'Noto Sans JP',sans-serif;
 transition:background 0.15s;border:1px solid;flex-shrink:0;
 min-height:44px;-webkit-tap-highlight-color:transparent;
 }
-.fbok{background:var(–red-dim);border-color:rgba(255,107,122,0.4);color:var(–red)}.fbok:active{background:rgba(255,107,122,0.28)}
-.fbmaybe{background:var(–gold-dim);border-color:rgba(245,200,66,0.4);color:var(–gold)}.fbmaybe:active{background:rgba(245,200,66,0.28)}
-.fbng{background:var(–blue-dim);border-color:rgba(108,143,255,0.4);color:var(–blue)}.fbng:active{background:rgba(108,143,255,0.28)}
-.fbskip{background:var(–card);border-color:var(–border2);color:var(–muted2)}.fbskip:active{border-color:var(–accent);color:var(–accent)}
-
+.fbok{background:var(--red-dim);border-color:rgba(255,107,122,0.4);color:var(--red)}.fbok:active{background:rgba(255,107,122,0.28)}
+.fbmaybe{background:var(--gold-dim);border-color:rgba(245,200,66,0.4);color:var(--gold)}.fbmaybe:active{background:rgba(245,200,66,0.28)}
+.fbng{background:var(--blue-dim);border-color:rgba(108,143,255,0.4);color:var(--blue)}.fbng:active{background:rgba(108,143,255,0.28)}
+.fbskip{background:var(--card);border-color:var(--border2);color:var(--muted2)}.fbskip:active{border-color:var(--accent);color:var(--accent)}
 .fc-nav{display:flex;gap:6px;justify-content:center;flex-shrink:0;flex-wrap:wrap}
-.fc-kbd{font-size:0.62rem;color:var(–muted);text-align:center;flex-shrink:0;padding-bottom:4px}
-kbd{background:var(–card);border:1px solid var(–border2);border-radius:4px;padding:1px 5px;font-family:‘Fira Code’,monospace;font-size:0.62rem;color:var(–muted2)}
-
-/* スマホではキーボードヒント非表示 */
+.fc-kbd{font-size:0.62rem;color:var(--muted);text-align:center;flex-shrink:0;padding-bottom:4px}
+kbd{background:var(--card);border:1px solid var(--border2);border-radius:4px;padding:1px 5px;font-family:'Fira Code',monospace;font-size:0.62rem;color:var(--muted2)}
 @media(max-width:600px){.fc-kbd{display:none}}
 
 /* ===== QUIZ MODE ===== */
 .qz-card{
 width:100%;max-width:520px;flex-shrink:0;
-background:var(–card);border:1px solid var(–border2);
+background:var(--card);border:1px solid var(--border2);
 border-radius:16px;padding:18px 16px;position:relative;overflow:hidden;
 }
-.qz-ex-en{font-size:0.95rem;color:var(–text);line-height:1.65;font-style:italic;margin-bottom:4px}
-.qz-ex-ja{font-size:0.75rem;color:var(–muted2);margin-bottom:10px}
-.qz-word{font-family:‘Playfair Display’,serif;font-size:1.4rem;font-weight:700;color:var(–text);margin-bottom:12px}
+.qz-ex-en{font-size:0.95rem;color:var(--text);line-height:1.65;font-style:italic;margin-bottom:4px}
+.qz-ex-ja{font-size:0.75rem;color:var(--muted2);margin-bottom:10px}
+.qz-word{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:var(--text);margin-bottom:12px}
 .qz-choices{display:flex;flex-direction:column;gap:7px;width:100%;max-width:520px;flex-shrink:0}
 .qz-choice{
-background:var(–card);border:1px solid var(–border2);border-radius:10px;
-padding:11px 14px;cursor:pointer;font-family:‘Noto Sans JP’,sans-serif;
-font-size:0.84rem;color:var(–text);transition:all 0.15s;text-align:left;
+background:var(--card);border:1px solid var(--border2);border-radius:10px;
+padding:11px 14px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;
+font-size:0.84rem;color:var(--text);transition:all 0.15s;text-align:left;
 min-height:44px;-webkit-tap-highlight-color:transparent;
 }
-.qz-choice:active{border-color:var(–accent);background:rgba(124,158,248,0.08)}
-.qz-choice.correct{border-color:var(–green);background:var(–green-dim);color:var(–green)}
-.qz-choice.wrong{border-color:var(–red);background:var(–red-dim);color:var(–red)}
-.qz-choice.reveal{border-color:var(–green);background:var(–green-dim);color:var(–green)}
+.qz-choice:active{border-color:var(--accent);background:rgba(124,158,248,0.08)}
+.qz-choice.correct{border-color:var(--green);background:var(--green-dim);color:var(--green)}
+.qz-choice.wrong{border-color:var(--red);background:var(--red-dim);color:var(--red)}
+.qz-choice.reveal{border-color:var(--green);background:var(--green-dim);color:var(--green)}
 .qz-choice:disabled,.qz-choice[disabled]{cursor:default;opacity:0.7}
 .qz-result{font-size:0.8rem;padding:8px 0;flex-shrink:0;text-align:center}
-.qz-result.ok{color:var(–green)}.qz-result.ng{color:var(–red)}
+.qz-result.ok{color:var(--green)}.qz-result.ng{color:var(--red)}
 .qz-acts{display:flex;gap:7px;justify-content:center;flex-shrink:0}
-.qz-stats{font-family:‘Fira Code’,monospace;font-size:0.72rem;color:var(–muted2);margin-bottom:8px}
+.qz-stats{font-family:'Fira Code',monospace;font-size:0.72rem;color:var(--muted2);margin-bottom:8px}
 
 @media(max-width:480px){
 .fc-word{font-size:1.5rem}
@@ -257,17 +246,42 @@ min-height:44px;-webkit-tap-highlight-color:transparent;
 .ov-body{padding:10px 10px 14px}
 }
 
-/* FC セクション選択セレクトボックス */
 .fc-sec-sel{
-background:var(–card);border:1px solid var(–border2);border-radius:7px;
-padding:5px 8px;color:var(–text);font-family:‘Fira Code’,monospace;font-size:0.75rem;
+background:var(--card);border:1px solid var(--border2);border-radius:7px;
+padding:5px 8px;color:var(--text);font-family:'Fira Code',monospace;font-size:0.75rem;
 outline:none;cursor:pointer;-webkit-appearance:none;appearance:none;
 min-height:32px;min-width:120px;
 }
-.fc-sec-sel:focus{border-color:var(–accent)}
-/* ov-header の2行レイアウト */
+.fc-sec-sel:focus{border-color:var(--accent)}
 .ov-header-inner{display:flex;align-items:center;gap:6px;flex-wrap:wrap;width:100%}
 .ov-header-range{display:flex;align-items:center;gap:6px;flex-wrap:wrap;width:100%;padding-top:2px}
+
+/* ===== GENERATE OVERLAY ===== */
+#gen-overlay .ov-body{align-items:stretch;max-width:700px;margin:0 auto;width:100%}
+.gen-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;width:100%}
+.gen-stat{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 12px}
+.gen-stat-label{font-size:0.62rem;color:var(--muted2);font-family:'Fira Code',monospace;margin-bottom:4px}
+.gen-stat-val{font-size:1.3rem;font-weight:700;font-family:'Fira Code',monospace}
+.gen-pbar-wrap{width:100%;background:var(--border);border-radius:3px;height:6px;overflow:hidden}
+.gen-pfill{height:100%;background:linear-gradient(90deg,var(--green),var(--accent));border-radius:3px;transition:width 0.4s;width:0%}
+.gen-log{
+width:100%;flex:1;min-height:160px;
+background:var(--card);border:1px solid var(--border);border-radius:10px;
+padding:10px 12px;overflow-y:auto;font-family:'Fira Code',monospace;font-size:0.68rem;
+color:var(--muted2);
+}
+.gen-log p{margin:0 0 3px;line-height:1.5}
+.gen-log p.ok{color:var(--green)}
+.gen-log p.err{color:var(--red)}
+.gen-log p.info{color:var(--accent)}
+.gen-range-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;width:100%}
+.gen-sel{
+background:var(--card);border:1px solid var(--border2);border-radius:7px;
+padding:6px 10px;color:var(--text);font-family:'Fira Code',monospace;font-size:0.75rem;
+outline:none;cursor:pointer;-webkit-appearance:none;appearance:none;
+min-height:34px;flex:1;min-width:120px;max-width:240px;
+}
+.gen-sel:focus{border-color:var(--accent)}
 </style>
 
 </head>
@@ -283,6 +297,7 @@ min-height:32px;min-width:120px;
       <button class="btn btn-purple" onclick="openQZ()">&#10067; クイズ</button>
       <button class="btn" onclick="openQZRandom50()" style="border-color:var(--purple);color:var(--purple)">&#127922; 50問</button>
       <button class="btn btn-gold" onclick="openFC()">&#128199; 暗記</button>
+      <button class="btn" onclick="openGen()" style="border-color:var(--green);color:var(--green)">&#9889; 例文生成</button>
     </div>
   </div>
 </div>
@@ -360,10 +375,8 @@ min-height:32px;min-width:120px;
 <div id="list-view"></div>
 
 <!-- FLASHCARD OVERLAY -->
-
 <div class="overlay" id="fc-overlay">
   <div class="ov-header" style="flex-direction:column;align-items:stretch;gap:5px;padding:8px 12px;">
-    <!-- 行1: タイトル・進捗・マーク集計・操作ボタン -->
     <div class="ov-header-inner">
       <span class="ov-title">&#128199; 暗記モード</span>
       <span class="ov-ctr" id="fc-ctr">0 / 0</span>
@@ -376,7 +389,6 @@ min-height:32px;min-width:120px;
         <button class="btn btn-sm" onclick="closeFC()">&#127968; ホーム</button>
       </div>
     </div>
-    <!-- 行2: セクション範囲絞り込み -->
     <div class="ov-header-range">
       <select id="fc-sec-from" class="fc-sec-sel"></select>
       <span style="font-size:0.82rem;color:var(--muted2);">〜</span>
@@ -386,13 +398,11 @@ min-height:32px;min-width:120px;
   </div>
   <div class="pbar"><div class="pfill" id="fc-pfill" style="width:0%"></div></div>
   <div class="ov-body" id="fc-body">
-    <!-- カードをタップすると全意味がまとめて表示される -->
     <div class="fc-card" id="fc-card" onclick="fcReveal()">
       <div class="fc-fb" id="fc-fb"><span class="fc-fbsym" id="fc-fbsym"></span></div>
       <span class="fc-pos" id="fc-pos"></span>
       <div class="fc-word" id="fc-word">—</div>
       <div class="fc-badge" id="fc-badge">0 meanings</div>
-      <!-- 全意味まとめて表示 -->
       <div class="fc-meanings" id="fc-meanings"></div>
       <span class="fc-hint" id="fc-hint">タップして意味を見る</span>
     </div>
@@ -413,7 +423,6 @@ min-height:32px;min-width:120px;
 </div>
 
 <!-- QUIZ OVERLAY -->
-
 <div class="overlay" id="qz-overlay">
   <div class="ov-header">
     <span class="ov-title">&#10067; 例文クイズ</span>
@@ -441,6 +450,65 @@ min-height:32px;min-width:120px;
   </div>
 </div>
 
+<!-- GENERATE OVERLAY -->
+<div class="overlay" id="gen-overlay">
+  <div class="ov-header">
+    <span class="ov-title">&#9889; 例文一括生成</span>
+    <div style="margin-left:auto;display:flex;gap:5px;flex-wrap:wrap;">
+      <button class="btn btn-sm" id="gen-btn-start" onclick="genStart()" style="border-color:var(--green);color:var(--green);">&#9654; 生成開始</button>
+      <button class="btn btn-sm" id="gen-btn-stop" onclick="genStop()" disabled>&#9646;&#9646; 停止</button>
+      <button class="btn btn-sm" onclick="genClearAll()" style="color:var(--red);border-color:var(--red);">&#128465; 全削除</button>
+      <button class="btn btn-sm" onclick="closeGen()">&#127968; ホーム</button>
+    </div>
+  </div>
+  <div class="pbar"><div class="pfill" id="gen-pfill" style="width:0%"></div></div>
+  <div class="ov-body" id="gen-body" style="align-items:stretch;gap:10px;">
+
+    <!-- セクション範囲 -->
+    <div class="gen-range-row">
+      <span style="font-size:0.75rem;color:var(--muted2);white-space:nowrap;">§ 範囲:</span>
+      <select id="gen-sec-from" class="gen-sel"></select>
+      <span style="font-size:0.82rem;color:var(--muted2);">〜</span>
+      <select id="gen-sec-to" class="gen-sel"></select>
+      <button class="btn btn-sm" onclick="genUpdateStats()" style="border-color:var(--accent);color:var(--accent);">確認</button>
+    </div>
+
+    <!-- 統計カード -->
+    <div class="gen-stats">
+      <div class="gen-stat">
+        <div class="gen-stat-label">対象単語数</div>
+        <div class="gen-stat-val" id="gstat-words" style="color:var(--text);">—</div>
+      </div>
+      <div class="gen-stat">
+        <div class="gen-stat-label">対象意味数</div>
+        <div class="gen-stat-val" id="gstat-meanings" style="color:var(--text);">—</div>
+      </div>
+      <div class="gen-stat">
+        <div class="gen-stat-label">生成済み</div>
+        <div class="gen-stat-val" id="gstat-done" style="color:var(--green);">—</div>
+      </div>
+      <div class="gen-stat">
+        <div class="gen-stat-label">残り</div>
+        <div class="gen-stat-val" id="gstat-left" style="color:var(--gold);">—</div>
+      </div>
+      <div class="gen-stat">
+        <div class="gen-stat-label">エラー</div>
+        <div class="gen-stat-val" id="gstat-err" style="color:var(--red);">0</div>
+      </div>
+    </div>
+
+    <!-- プログレスバー -->
+    <div class="gen-pbar-wrap">
+      <div class="gen-pfill" id="gen-pbar-fill"></div>
+    </div>
+
+    <!-- ログ -->
+    <div class="gen-log" id="gen-log">
+      <p style="color:var(--muted);">セクション範囲を選んで「生成開始」を押すと、未生成の例文を自動で作ります。生成済みの例文はスキップされます。</p>
+    </div>
+  </div>
+</div>
+
 <script>
 var POLY=[];
 var _EX=JSON.parse('{"1_0":{"en":"Water is vital to all living organisms.","ja":"\u6c34\u306f\u5168\u3066\u306e\u751f\u304d\u7269\u306b\u3068\u3063\u3066\u4e0d\u53ef\u6b20\u3067\u3059\u3002"},"1_1":{"en":"The doctor checked his vital signs carefully.","ja":"\u533b\u5e2b\u306f\u5f7c\u306e\u30d0\u30a4\u30bf\u30eb\u30b5\u30a4\u30f3\u3092\u4e01\u5be7\u306b\u78ba\u8a8d\u3057\u305f\u3002"},"4_0":{"en":"Sleep is essential for good health.","ja":"\u7761\u7720\u306f\u5065\u5eb7\u306b\u4e0d\u53ef\u6b20\u3067\u3059\u3002"},"4_1":{"en":"Honesty is an essential quality in a leader.","ja":"\u8aa0\u5b9f\u3055\u306f\u30ea\u30fc\u30c0\u30fc\u306e\u672c\u8cea\u7684\u306a\u8cc7\u8cea\u3067\u3059\u3002"},"9_0":{"en":"We need to discuss this matter immediately.","ja":"\u3053\u306e\u554f\u984c\u3092\u3059\u3050\u306b\u8a71\u3057\u5408\u3046\u5fc5\u8981\u304c\u3042\u308a\u307e\u3059\u3002"},"9_1":{"en":"What you say to others really matters.","ja":"\u4ed6\u8005\u3078\u306e\u8a00\u8449\u306f\u672c\u5f53\u306b\u91cd\u8981\u3067\u3059\u3002"},"10_0":{"en":"She counted the coins on the table.","ja":"\u5f7c\u5973\u306f\u30c6\u30fc\u30d6\u30eb\u306e\u4e0a\u306e\u30b3\u30a4\u30f3\u3092\u6570\u3048\u305f\u3002"},"10_1":{"en":"Every vote counts in a close election.","ja":"\u63a5\u6226\u306e\u9078\u6319\u3067\u306f\u3059\u3079\u3066\u306e\u7968\u304c\u91cd\u8981\u3067\u3059\u3002"}}');
@@ -448,11 +516,15 @@ var exCache={};
 var marks={};
 try{marks=JSON.parse(localStorage.getItem('poly_marks')||'{}');}catch(e){marks={};}
 try{var _ls=localStorage.getItem('poly_examples');if(_ls)exCache=JSON.parse(_ls);}catch(e){}
+// 埋め込み例文をキャッシュに追加（未生成のもののみ）
 Object.keys(_EX).forEach(function(k){if(!exCache[k])exCache[k]=_EX[k];});
 
 var S={search:'',filter:'all',sec:0};
 var fc={list:[],idx:0,revealed:false};
 var qz={list:[],idx:0,correct:0,total:0,answered:false};
+
+// ===== GENERATE STATE =====
+var gen={running:false,stopFlag:false,errCount:0};
 
 function exKey(wordId,mIdx){return String(wordId)+'_'+String(mIdx);}
 function markKey(id,mIdx){return String(id)+'_'+String(mIdx);}
@@ -474,12 +546,15 @@ function saveMark(id,type,mIdx){
   if(mIdx!==undefined){
     marks[markKey(id,mIdx)]=type;
   } else {
-    // FCモード: 全意味に同じマーク
     var w=POLY.find(function(x){return x.id===id;});
     if(w)w.meanings.forEach(function(_,i){marks[markKey(id,i)]=type;});
   }
   try{localStorage.setItem('poly_marks',JSON.stringify(marks));}catch(e){}
   updateStats();
+}
+
+function saveExCache(){
+  try{localStorage.setItem('poly_examples',JSON.stringify(exCache));}catch(e){}
 }
 
 function updateStats(){
@@ -488,59 +563,13 @@ function updateStats(){
   document.getElementById('cnt-d').textContent=v.filter(function(x){return x==='difficult';}).length;
 }
 
-// セクションの id 範囲定義 (sec番号 -> [min, max] の id範囲、両端含む)
 var SEC_RANGES=[
-  null,          // 0: すべて (使わない)
-  [1,25],        // §1
-  [26,47],       // §2
-  [48,86],       // §3
-  [87,132],      // §4
-  [133,159],     // §5
-  [160,191],     // §6
-  [192,247],     // §7
-  [248,294],     // §8
-  [295,332],     // §9
-  [333,379],     // §10
-  [380,409],     // §11
-  [410,435],     // §12
-  [436,491],     // §13
-  [492,520],     // §14
-  [521,574],     // §15
-  [575,604],     // §16
-  [605,638],     // §17
-  [639,674],     // §18
-  [675,717],     // §19
-  [718,770],     // §20
-  [771,809],     // §21
-  [810,861],     // §22
-  [862,905],     // §23
-  [906,951],     // §24
-  [952,999],     // §25
-  [1000,1041],   // §26
-  [1042,1085],   // §27
-  [1086,1138],   // §28
-  [1139,1191],   // §29
-  [1192,1237],   // §30
-  [1238,1281],   // §31
-  [1282,1346],   // §32
-  [1347,1382],   // §33
-  [1383,1421],   // §34
-  [1422,1470],   // §35
-  [1471,1510],   // §36
-  [1511,1555],   // §37
-  [1556,1602],   // §38
-  [1603,1652],   // §39
-  [1653,1721],   // §40
-  [1722,1779],   // §41
-  [1780,1851],   // §42
-  [1852,1899],   // §43
-  [1900,1933],   // §44
-  [1934,1972],   // §45
-  [1973,2007],   // §46
-  [2008,2047],   // §47
-  [2048,2084],   // §48
-  [2085,2128],   // §49
-  [2129,2176]    // §50
+  null,
+  [1,25],[26,47],[48,86],[87,132],[133,159],[160,191],[192,247],[248,294],[295,332],[333,379],
+  [380,409],[410,435],[436,491],[492,520],[521,574],[575,604],[605,638],[639,674],[675,717],[718,770],
+  [771,809],[810,861],[862,905],[906,951],[952,999],[1000,1041],[1042,1085],[1086,1138],[1139,1191],[1192,1237],
+  [1238,1281],[1282,1346],[1347,1382],[1383,1421],[1422,1470],[1471,1510],[1511,1555],[1556,1602],[1603,1652],[1653,1721],
+  [1722,1779],[1780,1851],[1852,1899],[1900,1933],[1934,1972],[1973,2007],[2008,2047],[2048,2084],[2085,2128],[2129,2176]
 ];
 
 function inSection(wordId,sec){
@@ -648,7 +677,7 @@ function doMarkMeaning(id,mIdx,type,e){
 
 // ===== API =====
 async function fetchOneExample(en,meaning){
-  var prompt='Write one example sentence (8-12 words) for "'+en+'" meaning: "'+meaning+'". Return ONLY JSON: {"en":"sentence","ja":"日本語訳"}';
+  var prompt='Write one example sentence (8-12 words) for "'+en+'" meaning: "'+meaning+'". Return ONLY JSON with no extra text: {"en":"sentence","ja":"日本語訳"}';
   var resp=await fetch('https://api.anthropic.com/v1/messages',{
     method:'POST',headers:{'Content-Type':'application/json'},
     body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:200,messages:[{role:'user',content:prompt}]})
@@ -669,13 +698,141 @@ function closeOverlay(id){
   document.body.style.cssText='';
 }
 
+// ===== GENERATE MODE =====
+function genBuildSelects(){
+  var sf=document.getElementById('gen-sec-from');
+  var st=document.getElementById('gen-sec-to');
+  if(!sf||!st)return;
+  sf.innerHTML=st.innerHTML='';
+  var o0=document.createElement('option');o0.value=0;o0.textContent='すべて(先頭)';sf.appendChild(o0);
+  var o0t=document.createElement('option');o0t.value=0;o0t.textContent='すべて(末尾)';st.appendChild(o0t);
+  for(var i=1;i<SEC_RANGES.length;i++){
+    var r=SEC_RANGES[i];
+    var label='§'+i+' ('+r[0]+'-'+r[1]+')';
+    var o1=document.createElement('option');o1.value=i;o1.textContent=label;sf.appendChild(o1);
+    var o2=document.createElement('option');o2.value=i;o2.textContent=label;st.appendChild(o2);
+  }
+}
+
+function genGetTargetWords(){
+  var fv=parseInt(document.getElementById('gen-sec-from').value)||0;
+  var tv=parseInt(document.getElementById('gen-sec-to').value)||0;
+  if(!POLY.length)return[];
+  if(fv===0&&tv===0)return POLY.slice();
+  var minId=fv>0?SEC_RANGES[fv][0]:1;
+  var maxId=tv>0?SEC_RANGES[tv][1]:999999;
+  if(fv>0&&tv>0&&tv<fv){var tmp=minId;minId=maxId;maxId=tmp;}
+  return POLY.filter(function(w){return w.id>=minId&&w.id<=maxId;});
+}
+
+function genUpdateStats(){
+  var words=genGetTargetWords();
+  var meanings=0,done=0;
+  words.forEach(function(w){
+    w.meanings.forEach(function(_,i){
+      meanings++;
+      if(exCache[exKey(w.id,i)])done++;
+    });
+  });
+  document.getElementById('gstat-words').textContent=words.length;
+  document.getElementById('gstat-meanings').textContent=meanings;
+  document.getElementById('gstat-done').textContent=done;
+  document.getElementById('gstat-left').textContent=meanings-done;
+  document.getElementById('gstat-err').textContent=gen.errCount;
+  var pct=meanings>0?(done/meanings*100):0;
+  document.getElementById('gen-pbar-fill').style.width=pct.toFixed(1)+'%';
+}
+
+function genLog(msg,type){
+  var el=document.getElementById('gen-log');
+  var p=document.createElement('p');
+  p.textContent=msg;
+  if(type)p.className=type;
+  el.appendChild(p);
+  el.scrollTop=el.scrollHeight;
+}
+
+function openGen(){
+  genBuildSelects();
+  openOverlay('gen-overlay');
+  gen.errCount=0;
+  genUpdateStats();
+}
+function closeGen(){
+  if(gen.running){gen.stopFlag=true;}
+  closeOverlay('gen-overlay');
+  render();
+}
+
+async function genStart(){
+  if(gen.running)return;
+  gen.errCount=0;
+  genUpdateStats();
+  var words=genGetTargetWords();
+  var queue=[];
+  words.forEach(function(w){
+    w.meanings.forEach(function(m,i){
+      if(!exCache[exKey(w.id,i)])queue.push({w:w,i:i,m:m});
+    });
+  });
+  if(queue.length===0){genLog('すべて生成済みです！','ok');return;}
+
+  gen.running=true;gen.stopFlag=false;
+  document.getElementById('gen-btn-start').disabled=true;
+  document.getElementById('gen-btn-stop').disabled=false;
+  genLog('生成開始: '+queue.length+' 件の例文を生成します。','info');
+
+  for(var qi=0;qi<queue.length;qi++){
+    if(gen.stopFlag){genLog('停止しました。('+qi+'/'+queue.length+' 完了)','info');break;}
+    var item=queue[qi];
+    var k=exKey(item.w.id,item.i);
+    try{
+      genLog('['+(qi+1)+'/'+queue.length+'] '+item.w.en+' 意味'+(item.i+1)+': '+item.m.substring(0,24)+'…');
+      var ex=await fetchOneExample(item.w.en,item.m);
+      exCache[k]=ex;
+      saveExCache();
+      genLog('✓ '+item.w.en+': '+ex.en,'ok');
+      genUpdateStats();
+    }catch(e){
+      gen.errCount++;
+      genLog('✗ '+item.w.en+'['+item.i+']: '+e.message,'err');
+      genUpdateStats();
+      await new Promise(function(r){setTimeout(r,1500);});
+    }
+    // リクエスト間隔 (APIレート制限対策)
+    await new Promise(function(r){setTimeout(r,300);});
+  }
+
+  if(!gen.stopFlag)genLog('完了！ 例文生成が終わりました。','ok');
+  gen.running=false;gen.stopFlag=false;
+  document.getElementById('gen-btn-start').disabled=false;
+  document.getElementById('gen-btn-stop').disabled=true;
+  genUpdateStats();
+}
+
+function genStop(){
+  gen.stopFlag=true;
+  document.getElementById('gen-btn-stop').disabled=true;
+  genLog('停止中…','info');
+}
+
+function genClearAll(){
+  if(!confirm('生成済みの全例文を削除しますか？\n（マーク・暗記データは削除されません）'))return;
+  // 組み込み例文は残す
+  var newCache={};
+  Object.keys(_EX).forEach(function(k){newCache[k]=_EX[k];});
+  exCache=newCache;
+  saveExCache();
+  gen.errCount=0;
+  genLog('全例文を削除しました（組み込み例文8件は保持）。','info');
+  genUpdateStats();
+}
+
 // ===== FLASHCARD =====
-// セクションセレクトを初期化（POLY読み込み後に呼ぶ）
 function fcInitSecSelects(){
   var fromSel=document.getElementById('fc-sec-from');
   var toSel=document.getElementById('fc-sec-to');
   fromSel.innerHTML='';toSel.innerHTML='';
-  // §0 = すべて
   var allOpt=document.createElement('option');allOpt.value=0;allOpt.textContent='すべて';
   fromSel.appendChild(allOpt.cloneNode(true));
   toSel.appendChild(allOpt.cloneNode(true));
@@ -685,27 +842,23 @@ function fcInitSecSelects(){
     var o1=document.createElement('option');o1.value=i;o1.textContent=label;fromSel.appendChild(o1);
     var o2=document.createElement('option');o2.value=i;o2.textContent=label;toSel.appendChild(o2);
   }
-  // デフォルト: ホーム画面の現在セクション設定を反映
   fromSel.value=S.sec;
   toSel.value=S.sec;
 }
 
-// セクション範囲を適用してFCリストを再構築
 function fcApplySecRange(){
   var fromV=parseInt(document.getElementById('fc-sec-from').value)||0;
-  var toV  =parseInt(document.getElementById('fc-sec-to').value)||0;
-  // toV < fromV の場合は swap
+  var toV=parseInt(document.getElementById('fc-sec-to').value)||0;
   if(fromV>0&&toV>0&&toV<fromV){var tmp=fromV;fromV=toV;toV=tmp;}
-  // 対象単語を絞り込み
-  var base=getFiltered(); // 既存フィルタ（マーク・検索）も維持
+  var base=getFiltered();
   var result;
   if(fromV===0&&toV===0){
     result=base.slice();
-  } else if(fromV===0){
-    result=base.filter(function(w){return inSection(w.id,toV)||w.id<=SEC_RANGES[toV][1];});
-  } else if(toV===0){
+  }else if(fromV===0){
+    result=base.filter(function(w){return w.id<=SEC_RANGES[toV][1];});
+  }else if(toV===0){
     result=base.filter(function(w){return w.id>=SEC_RANGES[fromV][0];});
-  } else {
+  }else{
     var minId=SEC_RANGES[fromV][0];
     var maxId=SEC_RANGES[toV][1];
     result=base.filter(function(w){return w.id>=minId&&w.id<=maxId;});
@@ -716,7 +869,6 @@ function fcApplySecRange(){
   fcShow();
 }
 
-// FCリスト内のマーク集計を更新
 function fcUpdateMarkCounts(){
   var ok=0,mb=0,ng=0;
   fc.list.forEach(function(w){
@@ -730,12 +882,10 @@ function fcUpdateMarkCounts(){
   document.getElementById('fc-mark-ng').textContent='✕ '+ng;
 }
 
-// 意味は分けず、1枚のカードに全意味まとめて表示する
 function openFC(){
   var fl=getFiltered();
   if(fl.length===0){alert('表示中の単語がありません');return;}
   fc.list=fl.slice();fc.idx=0;fc.revealed=false;
-  // セレクトをホームの現在セクションに合わせてセット
   var fromSel=document.getElementById('fc-sec-from');
   var toSel=document.getElementById('fc-sec-to');
   if(fromSel){fromSel.value=S.sec;toSel.value=S.sec;}
@@ -752,8 +902,6 @@ function fcShow(){
   document.getElementById('fc-pos').textContent='#'+w.id;
   document.getElementById('fc-word').textContent=w.en;
   document.getElementById('fc-badge').textContent=w.meanings.length+' meanings';
-
-  // 意味を全部まとめて非表示にセット
   var meaningsDiv=document.getElementById('fc-meanings');
   meaningsDiv.innerHTML='';
   w.meanings.forEach(function(m,i){
@@ -763,7 +911,6 @@ function fcShow(){
     meaningsDiv.appendChild(item);
   });
   meaningsDiv.classList.remove('show');
-
   document.getElementById('fc-acts').style.display='none';
   document.getElementById('fc-hint').textContent='タップして意味を見る';
   fc.revealed=false;
@@ -792,7 +939,7 @@ function fcRandom50(){
   fc.idx=0;fc.revealed=false;
   if(document.getElementById('fc-overlay').style.cssText.indexOf('flex')>=0){
     fcShow();
-  } else {
+  }else{
     openOverlay('fc-overlay');fcShow();
   }
 }
@@ -809,7 +956,6 @@ function showFb(type){
 function fcMark(type){
   var w=fc.list[fc.idx];
   showFb(type);
-  // 全意味に同じマークをつける
   saveMark(w.id,type,undefined);
   fcUpdateMarkCounts();
   setTimeout(fcNext,350);
@@ -825,7 +971,7 @@ function openQZ(){
     });
   });
   if(items.length<4){
-    alert('例文クイズには例文が4件以上必要です。先に一括生成を実行してください。');
+    alert('例文クイズには例文が4件以上必要です。「⚡ 例文生成」から生成してください。');
     return;
   }
   items.sort(function(){return Math.random()-0.5;});
@@ -847,7 +993,6 @@ function qzShow(){
   document.getElementById('qz-acts').style.display='none';
   document.getElementById('qz-stats').textContent='正解率: '+qz.correct+'/'+qz.total;
   qz.answered=false;
-
   var correct=item.meaning;
   var sameWordWrongs=item.w.meanings.filter(function(m,i){return i!==item.mIdx;});
   sameWordWrongs.sort(function(){return Math.random()-0.5;});
@@ -862,7 +1007,6 @@ function qzShow(){
   }
   wrongs.sort(function(){return Math.random()-0.5;});
   var choices=[correct,wrongs[0],wrongs[1],wrongs[2]].sort(function(){return Math.random()-0.5;});
-
   var choicesDiv=document.getElementById('qz-choices');
   choicesDiv.innerHTML='';
   choices.forEach(function(c){
@@ -905,7 +1049,7 @@ function openQZRandom50(){
       if(exCache[k])items.push({w:w,mIdx:i,meaning:m,ex:exCache[k]});
     });
   });
-  if(items.length<4){alert('例文が4件以上必要です。');return;}
+  if(items.length<4){alert('例文が4件以上必要です。「⚡ 例文生成」から生成してください。');return;}
   items.sort(function(){return Math.random()-0.5;});
   qz.list=items.slice(0,Math.min(50,items.length));
   qz.idx=0;qz.correct=0;qz.total=0;qz.answered=false;
@@ -937,7 +1081,7 @@ document.addEventListener('keydown',function(e){
     else if(e.key==='o'||e.key==='O'){if(fc.revealed)fcMark('learned');}
     else if(e.key==='x'||e.key==='X'){if(fc.revealed)fcMark('difficult');}
     else if(e.key==='Escape')closeFC();
-  } else if(qzOv.style.cssText.indexOf('flex')>=0){
+  }else if(qzOv.style.cssText.indexOf('flex')>=0){
     if(e.key==='ArrowRight'&&qz.answered)qzNext();
     else if(e.key==='Escape')closeQZ();
   }
@@ -950,7 +1094,7 @@ fetch('poly.json')
     POLY=data;
     document.getElementById('cnt-total').textContent=POLY.length;
     updateStats();
-    fcInitSecSelects();  // セクション選択肢を生成
+    fcInitSecSelects();
     render();
   })
   .catch(function(e){
